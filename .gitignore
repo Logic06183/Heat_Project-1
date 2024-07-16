@@ -1,0 +1,30 @@
+# Virtual environment
+parker_env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# CSV and Excel files
+*.csv
+*.xlsx
+
+# PowerPoint files
+*.pptx
+
+# Workspace settings
+*.code-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Ignore package manager files
+node_modules/
