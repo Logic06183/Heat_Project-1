@@ -9,43 +9,47 @@
 <body>
     <div class="container">
         <header>
-            <h1>HE2AT Data Acquisition Dashboard</h1>
-            <p class="last-updated">Last Updated: January 10, 2025</p>
-            <div class="update-links">
-                <a href="update_data.html" class="button">Update Dashboard Data</a>
+            <div class="header-content">
+                <img src="heat_logo.jpeg" alt="HEAT Logo" class="logo">
+                <h1>HE2AT Data Acquisition Dashboard</h1>
+            </div>
+            <div class="buttons">
+                <a href="update_data.html" class="button">Update Data</a>
                 <a href="sample_data.csv" class="button" download>Download Data Template</a>
             </div>
         </header>
 
-        <div class="dashboard-card overall">
-            <h2>Overall Progress</h2>
-            <div class="chart-container">
-                <iframe src="interactive_plots/overall_progress.html" frameborder="0"></iframe>
-            </div>
-        </div>
-
-        <div class="grid">
-            <div class="dashboard-card">
-                <h2>RP1 Progress</h2>
+        <main>
+            <div class="dashboard-card overall">
+                <h2>Overall Progress</h2>
                 <div class="chart-container">
-                    <iframe src="interactive_plots/rp1_progress.html" frameborder="0"></iframe>
+                    <iframe src="interactive_plots/overall_progress.html" frameborder="0" class="chart"></iframe>
                 </div>
             </div>
 
-            <div class="dashboard-card">
-                <h2>Johannesburg Progress</h2>
-                <div class="chart-container">
-                    <iframe src="interactive_plots/johannesburg_progress.html" frameborder="0"></iframe>
+            <div class="grid">
+                <div class="dashboard-card">
+                    <h2>RP1 Progress</h2>
+                    <div class="chart-container">
+                        <iframe src="interactive_plots/rp1_progress.html" frameborder="0" class="chart"></iframe>
+                    </div>
                 </div>
-            </div>
 
-            <div class="dashboard-card">
-                <h2>Abidjan Progress</h2>
-                <div class="chart-container">
-                    <iframe src="interactive_plots/abidjan_progress.html" frameborder="0"></iframe>
+                <div class="dashboard-card">
+                    <h2>Johannesburg Progress</h2>
+                    <div class="chart-container">
+                        <iframe src="interactive_plots/johannesburg_progress.html" frameborder="0" class="chart"></iframe>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h2>Abidjan Progress</h2>
+                    <div class="chart-container">
+                        <iframe src="interactive_plots/abidjan_progress.html" frameborder="0" class="chart"></iframe>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
 
         <footer>
             <div class="footer-content">

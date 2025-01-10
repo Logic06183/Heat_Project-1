@@ -32,10 +32,14 @@
             box-shadow: var(--shadow);
         }
 
-        h1 {
+        h1, h2 {
             color: var(--primary-color);
             margin-top: 0;
+        }
+
+        h1 {
             text-align: center;
+            margin-bottom: 2rem;
         }
 
         .instructions {
@@ -46,8 +50,26 @@
             border-left: 4px solid var(--primary-color);
         }
 
-        .upload-section {
+        .section {
             margin: 2rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        select, input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
         }
 
         .template-section {
@@ -58,14 +80,29 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
+            width: 100%;
+            margin-bottom: 1rem;
         }
 
         button:hover {
             opacity: 0.9;
+        }
+
+        .download-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .sample-data {
@@ -75,12 +112,43 @@
             overflow-x: auto;
             font-family: monospace;
             margin: 1rem 0;
+            font-size: 0.9rem;
         }
 
         footer {
             text-align: center;
             margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
             color: var(--secondary-color);
+        }
+
+        .error {
+            color: #dc3545;
+            padding: 1rem;
+            background: #f8d7da;
+            border-radius: 5px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success {
+            color: #28a745;
+            padding: 1rem;
+            background: #d4edda;
+            border-radius: 5px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -92,17 +160,28 @@
             <h2>Instructions</h2>
             <p>To update the dashboard data, please follow these steps:</p>
             <ol>
-                <li>Download the CSV template below</li>
+                <li>Select which chart you want to update</li>
+                <li>Download the corresponding CSV template</li>
                 <li>Fill in your updated data following the template format</li>
                 <li>Upload your completed CSV file</li>
-                <li>The dashboard will automatically update with the new data</li>
+                <li>Create a pull request to update the dashboard</li>
             </ol>
         </div>
 
-        <div class="template-section">
-            <h2>CSV Template Structure</h2>
-            <p>Your CSV file should follow this structure:</p>
-            <div class="sample-data">
+        <div class="section">
+            <div class="form-group">
+                <label for="chartSelect">Select Chart to Update:</label>
+                <select id="chartSelect" onchange="updateTemplate()">
+                    <option value="overall">Overall Progress</option>
+                    <option value="rp1">RP1 Progress</option>
+                    <option value="johannesburg">Johannesburg Progress</option>
+                    <option value="abidjan">Abidjan Progress</option>
+                </select>
+            </div>
+
+            <div class="template-section">
+                <h2>CSV Template Structure</h2>
+                <div class="sample-data" id="templatePreview">
 Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025
 1st or 2nd invites,7,5,3,2,1,0,0
 3rd or more invites,10,8,6,4,2,0,0
@@ -112,16 +191,31 @@ DTA completed,36,40,45,48,50,52,54
 Data sets in hand,64,68,72,75,78,80,82
 Databases harmonised,20,25,30,35,40,45,50
 Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,22
+                </div>
             </div>
-            <button onclick="downloadTemplate()">Download Template</button>
+
+            <div class="download-section">
+                <h2>Download Templates</h2>
+                <div class="download-grid">
+                    <button onclick="downloadTemplate('overall')">Overall Progress Template</button>
+                    <button onclick="downloadTemplate('rp1')">RP1 Progress Template</button>
+                    <button onclick="downloadTemplate('johannesburg')">Johannesburg Template</button>
+                    <button onclick="downloadTemplate('abidjan')">Abidjan Template</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Upload Updated Data</h2>
+                <div class="form-group">
+                    <label for="csvFile">Select your CSV file:</label>
+                    <input type="file" id="csvFile" accept=".csv" />
+                </div>
+                <button onclick="createPullRequest()">Create Pull Request</button>
+            </div>
         </div>
 
-        <div class="upload-section">
-            <h2>Upload Updated Data</h2>
-            <p>Select your CSV file to update the dashboard:</p>
-            <input type="file" id="csvFile" accept=".csv" />
-            <button onclick="uploadData()">Update Dashboard</button>
-        </div>
+        <div class="error" id="errorMessage"></div>
+        <div class="success" id="successMessage"></div>
 
         <footer>
             <p>Developed by Craig Parker</p>
@@ -129,8 +223,8 @@ Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,2
     </div>
 
     <script>
-        function downloadTemplate() {
-            const template = `Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025
+        const templates = {
+            overall: `Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025
 1st or 2nd invites,7,5,3,2,1,0,0
 3rd or more invites,10,8,6,4,2,0,0
 Data sharing discussions and eligibility check,29,25,22,18,15,12,10
@@ -138,36 +232,99 @@ DTA in progress,36,38,40,42,44,46,48
 DTA completed,36,40,45,48,50,52,54
 Data sets in hand,64,68,72,75,78,80,82
 Databases harmonised,20,25,30,35,40,45,50
-Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,22`;
+Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,22`,
+            rp1: `Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025
+1st or 2nd invites,7,5,3,2,1,0,0
+3rd or more invites,10,8,6,4,2,0,0
+Data sharing discussions and eligibility check,29,25,22,18,15,12,10
+DTA in progress,36,38,40,42,44,46,48
+DTA completed,36,40,45,48,50,52,54
+Data sets in hand,64,68,72,75,78,80,82
+Databases harmonised,20,25,30,35,40,45,50
+Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,22`,
+            johannesburg: `Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025
+1st or 2nd invites,7,5,3,2,1,0,0
+3rd or more invites,10,8,6,4,2,0,0
+Data sharing discussions and eligibility check,29,25,22,18,15,12,10
+DTA in progress,36,38,40,42,44,46,48
+DTA completed,36,40,45,48,50,52,54
+Data sets in hand,64,68,72,75,78,80,82
+Databases harmonised,20,25,30,35,40,45,50
+Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,22`,
+            abidjan: `Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025
+1st or 2nd invites,7,5,3,2,1,0,0
+3rd or more invites,10,8,6,4,2,0,0
+Data sharing discussions and eligibility check,29,25,22,18,15,12,10
+DTA in progress,36,38,40,42,44,46,48
+DTA completed,36,40,45,48,50,52,54
+Data sets in hand,64,68,72,75,78,80,82
+Databases harmonised,20,25,30,35,40,45,50
+Ineligible/declined participation/data currently unavailable,40,35,32,30,28,25,22`
+        };
 
+        function updateTemplate() {
+            const chartType = document.getElementById('chartSelect').value;
+            document.getElementById('templatePreview').textContent = templates[chartType];
+        }
+
+        function downloadTemplate(chartType) {
+            const template = templates[chartType];
             const blob = new Blob([template], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'dashboard_template.csv';
+            a.download = `${chartType}_template.csv`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         }
 
-        function uploadData() {
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function createPullRequest() {
             const fileInput = document.getElementById('csvFile');
-            const file = fileInput.files[0];
+            const chartType = document.getElementById('chartSelect').value;
             
-            if (!file) {
-                alert('Please select a CSV file first.');
+            if (!fileInput.files[0]) {
+                showError('Please select a CSV file first.');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const text = e.target.result;
-                // Here you would typically send this data to your server
-                // For this example, we'll just show a success message
-                alert('Data uploaded successfully! In a production environment, this would update the dashboard.');
+                const content = e.target.result;
+                
+                // Create the GitHub pull request URL with the new data
+                const repoUrl = 'https://github.com/Logic06183/Heat_Project-1';
+                const newBranch = `update-${chartType}-data-${Date.now()}`;
+                const prTitle = `Update ${chartType} progress data`;
+                
+                const prUrl = `${repoUrl}/compare/dashboard...${newBranch}?quick_pull=1&title=${encodeURIComponent(prTitle)}`;
+                
+                // Open the GitHub pull request page in a new tab
+                window.open(prUrl, '_blank');
+                
+                showSuccess('Please complete the pull request on GitHub to update the data.');
             };
-            reader.readAsText(file);
+            
+            reader.readAsText(fileInput.files[0]);
         }
     </script>
 </body>
