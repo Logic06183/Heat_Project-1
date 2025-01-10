@@ -41,36 +41,41 @@ color_map = {
 
 def create_stacked_bar_chart(df, title):
     """Create an interactive stacked bar chart showing progress"""
+    # Only keep the last 6 months of data
+    df_subset = df.copy()
+    if len(df.columns) > 7:  # If we have more than 6 months + Stage column
+        df_subset = df_subset[['Stage'] + list(df.columns[-6:])]
+    
     # Prepare the data
-    df = df[df['Stage'] != 'Total'].copy()  # Remove Total row
-    df = df.set_index('Stage').reindex(stage_order).reset_index()
-    months = df.columns[1:]
+    df_subset = df_subset[df_subset['Stage'] != 'Total'].copy()  # Remove Total row
+    df_subset = df_subset.set_index('Stage').reindex(stage_order).reset_index()
+    months = df_subset.columns[1:]
     
     # Fill NaN values with 0
-    df = df.fillna(0)
+    df_subset = df_subset.fillna(0)
     
     # Create figure
     fig = go.Figure()
     
     # Add traces for each stage
     for stage in stage_order:
-        if stage in df['Stage'].values:
+        if stage in df_subset['Stage'].values:
             fig.add_trace(go.Bar(
                 name=stage,
-                x=df.columns[1:],  # Skip 'Stage' column
-                y=df[df['Stage'] == stage].iloc[:, 1:].values[0],
+                x=df_subset.columns[1:],  # Skip 'Stage' column
+                y=df_subset[df_subset['Stage'] == stage].iloc[:, 1:].values[0],
                 marker_color=color_map.get(stage, '#000000')
             ))
     
     # Calculate totals excluding declined participation
-    monthly_totals = df[df['Stage'] != 'Declined Participation'].iloc[:, 1:].sum()
-    declined = df[df['Stage'] == 'Declined Participation'].iloc[:, 1:].values[0]
+    monthly_totals = df_subset[df_subset['Stage'] != 'Declined Participation'].iloc[:, 1:].sum()
+    declined = df_subset[df_subset['Stage'] == 'Declined Participation'].iloc[:, 1:].values[0]
     
     # Add annotations for N only
     annotations = []
     for i, (total, declined_val) in enumerate(zip(monthly_totals, declined)):
         annotations.append(dict(
-            x=df.columns[i+1],
+            x=df_subset.columns[i+1],
             y=total + declined_val,
             text=f'N={int(total + declined_val)}',
             showarrow=False,
