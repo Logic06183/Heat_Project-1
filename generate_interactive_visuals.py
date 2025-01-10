@@ -67,32 +67,22 @@ def create_stacked_bar_chart(df, title):
     monthly_totals = df[df['Stage'] != 'Ineligible/declined participation/data currently unavailable'].iloc[:, 1:].sum()
     ineligible = df[df['Stage'] == 'Ineligible/declined participation/data currently unavailable'].iloc[:, 1:].values[0]
     
-    # Add annotations for N and n with improved positioning
+    # Add annotations for N only
     annotations = []
     max_y = max(monthly_totals + ineligible)
-    padding = max_y * 0.08  # Dynamic padding based on chart height
+    padding = max_y * 0.05  # Reduced padding since we only have N labels
     
     for i, (month, total, excl) in enumerate(zip(months, monthly_totals, ineligible)):
-        # Position N and n with more spacing
-        annotations.extend([
+        annotations.append(
             dict(
                 x=month,
-                y=total + excl + padding,  # Dynamic padding
+                y=total + excl + padding,
                 text=f'N={int(total)}',
                 showarrow=False,
                 font=dict(size=12, color='black'),
                 yanchor='bottom'
-            ),
-            dict(
-                x=month,
-                y=total + excl + (padding/2),  # Half padding for n
-                text=f'n={int(excl)}',
-                showarrow=False,
-                font=dict(size=11, color='red'),
-                yanchor='bottom'
-            ) if excl > 0 else None
-        ])
-    annotations = [a for a in annotations if a is not None]
+            )
+        )
     
     # Update layout with improved spacing
     fig.update_layout(
@@ -116,30 +106,30 @@ def create_stacked_bar_chart(df, title):
             title="Number of Studies",
             titlefont=dict(size=14),
             tickfont=dict(size=12),
-            range=[0, max_y * 1.15]  # Add 15% padding for labels
+            range=[0, max_y * 1.1]  # Reduced padding since we removed n labels
         ),
         showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=-0.45,  # More space for legend
+            y=-0.35,  # Adjusted for better spacing
             xanchor="center",
             x=0.5,
             font=dict(size=11),
             bgcolor='rgba(255,255,255,0.9)',
             bordercolor='rgba(0,0,0,0.2)',
             borderwidth=1,
-            itemsizing='constant'  # Consistent legend item sizes
+            itemsizing='constant'
         ),
         annotations=annotations,
-        margin=dict(l=80, r=80, t=100, b=250),  # Increased bottom margin for legend
-        height=900,
-        width=1200,
+        margin=dict(l=60, r=60, t=100, b=150),  # Adjusted margins
+        height=800,  # Slightly reduced height
+        width=1600,  # Increased width for full screen
         hovermode='x unified',
         plot_bgcolor='white',
         paper_bgcolor='white',
-        bargap=0.15,  # Increased gap between bar groups
-        bargroupgap=0.1  # Gap between bars in a group
+        bargap=0.15,
+        bargroupgap=0.1
     )
     
     # Update axes lines and grid
@@ -151,7 +141,7 @@ def create_stacked_bar_chart(df, title):
         showgrid=True, 
         gridwidth=1, 
         gridcolor='lightgray',
-        dtick=50  # Set y-axis tick interval to 50
+        dtick=50
     )
     
     return fig
