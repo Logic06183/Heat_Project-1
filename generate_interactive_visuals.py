@@ -32,6 +32,9 @@ def create_stacked_bar_chart(df, title):
     df = df.set_index('Stage').reindex(stage_order).reset_index()
     months = df.columns[1:]
     
+    # Fill NaN values with 0
+    df = df.fillna(0)
+    
     # Create figure with secondary y-axis
     fig = go.Figure()
     
@@ -147,37 +150,51 @@ def create_stacked_bar_chart(df, title):
     
     return fig
 
-def standardize_data(df):
+def standardize_data(df, data_type='standard'):
     """Standardize the data format across different CSV files"""
-    if 'Month' in df.columns:
+    if data_type == 'sample':
         # For sample_data.csv format
         # Rename columns to match the standard format
         df = df.rename(columns={
             'Contact procedures not initiated': '1st or 2nd invites',
-            'Database harmonization': 'Databases harmonised'
+            'Database harmonization': 'Databases harmonised',
+            'Month': 'Stage'  # Temporarily rename for processing
         })
         
         # Convert wide format to long format
-        df_long = df.melt(id_vars=['Month'], var_name='Stage', value_name='Value')
+        df_long = df.melt(id_vars=['Stage'], var_name='Month', value_name='Value')
         
         # Handle duplicates by taking the latest value for each Stage-Month combination
         df_pivot = df_long.sort_values('Value').drop_duplicates(['Stage', 'Month'], keep='last')
         
         # Convert back to wide format
-        df = df_pivot.pivot(index='Stage', columns='Month', values='Value').reset_index()
+        df = df_pivot.pivot(index='Month', columns='Stage', values='Value').reset_index()
+        df = df.rename(columns={'Month': 'Stage'})  # Fix the column name back
         
         # Add missing categories with zeros
+        for stage in stage_order:
+            if stage not in df.columns:
+                df[stage] = 0
+        
+        # Reorder columns to match stage_order
+        df = df[['Stage'] + stage_order]
+        
+        # Fill NaN values with 0
+        df = df.fillna(0)
+    else:
+        # Remove Total row if present
+        if 'Total' in df['Stage'].values:
+            df = df[df['Stage'] != 'Total']
+        
+        # Ensure all required stages are present
         missing_stages = [s for s in stage_order if s not in df['Stage'].values]
         for stage in missing_stages:
             new_row = pd.DataFrame({'Stage': [stage], **{col: 0 for col in df.columns if col != 'Stage'}})
             df = pd.concat([df, new_row], ignore_index=True)
         
-        # Reorder stages to match stage_order
+        # Reorder rows to match stage_order
         df['Stage_order'] = df['Stage'].map({stage: i for i, stage in enumerate(stage_order)})
         df = df.sort_values('Stage_order').drop('Stage_order', axis=1)
-        
-        # Fill NaN values with 0
-        df = df.fillna(0)
     
     return df
 
@@ -187,12 +204,12 @@ def process_data():
     import os
     os.makedirs('interactive_plots', exist_ok=True)
     
-    # Define CSV files for each plot
-    csv_files = {
-        'overall': 'sample_data.csv',
-        'rp1': 'sample_data.csv',
-        'johannesburg': 'johannesburg_data.csv',
-        'abidjan': 'abidjan_data.csv'
+    # Define CSV files and their types for each plot
+    data_sources = {
+        'overall': ('sample_data.csv', 'sample'),
+        'rp1': ('sample_data.csv', 'sample'),
+        'johannesburg': ('johannesburg_data.csv', 'standard'),
+        'abidjan': ('abidjan_data.csv', 'standard')
     }
     
     # Create and save interactive plots with config options
@@ -210,13 +227,13 @@ def process_data():
     }
     
     plots = {}
-    for name, csv_file in csv_files.items():
+    for name, (csv_file, data_type) in data_sources.items():
         try:
             # Read CSV file
             df = pd.read_csv(csv_file)
             
             # Standardize the data format
-            df = standardize_data(df)
+            df = standardize_data(df, data_type)
             
             # Create plot title
             title = f'{name.title()} Progress of Data Acquisition'
