@@ -8,9 +8,9 @@ Entering into DTA,4,4,4,4,4,4,4,4
 Batch to send to Ethics,2,2,2,2,2,2,2,2
 Transfer of data in progress,4,4,4,4,4,4,4,4
 Data sets in hand,0,0,0,0,0,0,0,0
-Health check in progress,0,0,0,0,0,0,0,0
-Harmonization in progress,0,0,0,0,0,0,0,0
-Geo-coding in progress,0,0,0,0,0,0,0,0
+Health check in progress,0,0,4,4,4,4,4,4
+Harmonization in progress,0,0,3,3,3,3,3,3
+Geo-coding in progress,0,0,3,3,3,3,3,3
 Database finalized,0,0,0,0,0,0,0,0
 Data currently unavailable,11,11,11,11,11,11,11,11
 Declined Participation,1,1,1,1,1,1,1,1
