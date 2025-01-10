@@ -17,7 +17,7 @@
             <section class="dashboard-card">
                 <h2>Overall Progress</h2>
                 <div class="chart-container">
-                    <img src="Jan 2025/overall_progress.png" alt="Overall Progress Chart" class="chart">
+                    <img src="Jan 2025/overall_progress.png" alt="Overall Progress Chart" class="chart" onclick="openModal(this.src)">
                 </div>
             </section>
 
@@ -25,29 +25,62 @@
                 <section class="dashboard-card">
                     <h2>RP1 Progress</h2>
                     <div class="chart-container">
-                        <img src="Jan 2025/rp1_progress.png" alt="RP1 Progress Chart" class="chart">
+                        <img src="Jan 2025/rp1_progress.png" alt="RP1 Progress Chart" class="chart" onclick="openModal(this.src)">
                     </div>
                 </section>
 
                 <section class="dashboard-card">
                     <h2>Johannesburg Progress</h2>
                     <div class="chart-container">
-                        <img src="Jan 2025/johannesburg_progress.png" alt="Johannesburg Progress Chart" class="chart">
+                        <img src="Jan 2025/johannesburg_progress.png" alt="Johannesburg Progress Chart" class="chart" onclick="openModal(this.src)">
                     </div>
                 </section>
 
                 <section class="dashboard-card">
                     <h2>Abidjan Progress</h2>
                     <div class="chart-container">
-                        <img src="Jan 2025/abidjan_progress.png" alt="Abidjan Progress Chart" class="chart">
+                        <img src="Jan 2025/abidjan_progress.png" alt="Abidjan Progress Chart" class="chart" onclick="openModal(this.src)">
                     </div>
                 </section>
             </div>
         </main>
 
         <footer>
-            <p>© 2025 HE2AT Center. All rights reserved.</p>
+            <p> 2025 HE2AT Center. All rights reserved.</p>
         </footer>
     </div>
+
+    <!-- Modal for full-size image viewing -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" class="modal-content">
+        <div id="caption"></div>
+    </div>
+
+    <script>
+        function openModal(imgSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = imgSrc;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Prevent modal from closing when clicking on the image
+        document.getElementById('modalImage').onclick = function(event) {
+            event.stopPropagation();
+        };
+    </script>
 </body>
 </html>
