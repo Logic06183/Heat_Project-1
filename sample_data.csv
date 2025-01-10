@@ -1,9 +1,10 @@
-Month,Contact procedures not initiated,1st or 2nd invites,3rd or more invites,Data sharing discussions and eligibility check,DTA in progress,DTA completed,Data sets in hand,Database harmonization
-Nov 2023,0,2,1,14,12,0,9,0
-Dec 2023,0,2,1,14,10,0,9,0
-Jan 2024,0,2,2,15,10,0,7,0
-Feb 2024,0,2,2,15,9,0,8,0
-Mar 2024,0,2,2,15,3,8,8,0
-Apr 2024,0,2,2,15,3,2,14,0
-May 2024,0,2,1,13,3,4,15,0
-Jun 2024,0,2,2,12,3,6,9,6
+Stage,Nov 2023,Dec 2023,Jan 2024,Feb 2024,Mar 2024,Apr 2024,May 2024,Jun 2024,Dec 2024,Jan 2025,Feb 2025,Mar 2025,Apr 2025,May 2025,Jun 2025
+Contact procedures not initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+1st or 2nd invites,2,2,2,2,2,2,2,2,16,12,8,5,2,1,0
+3rd or more invites,1,1,2,2,2,2,1,2,10,7,4,2,1,0,0
+Data sharing discussions and eligibility check,14,14,15,15,15,15,13,12,29,31,33,35,37,39,41
+DTA in progress,12,10,10,9,3,3,3,3,23,25,27,29,31,33,35
+DTA completed,0,0,0,0,8,2,4,6,6,7,8,9,10,11,12
+Data sets in hand,9,9,7,8,8,14,15,9,6,7,8,9,10,11,12
+Database harmonization,0,0,0,0,0,0,0,6,1,2,3,4,5,6,7
+Ineligible/declined participation/data currently unavailable,0,0,0,0,0,0,0,0,24,24,24,24,24,24,24

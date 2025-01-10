@@ -206,8 +206,8 @@ def process_data():
     
     # Define CSV files and their types for each plot
     data_sources = {
-        'overall': ('sample_data.csv', 'sample'),
-        'rp1': ('sample_data.csv', 'sample'),
+        'overall': ('sample_data.csv', 'standard'),
+        'rp1': ('rp1_data.csv', 'standard'),
         'johannesburg': ('johannesburg_data.csv', 'standard'),
         'abidjan': ('abidjan_data.csv', 'standard')
     }
