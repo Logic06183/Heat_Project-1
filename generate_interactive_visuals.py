@@ -32,7 +32,7 @@ def create_stacked_bar_chart(df, title):
     df = df.set_index('Stage').reindex(stage_order).reset_index()
     months = df.columns[1:]
     
-    # Create figure
+    # Create figure with secondary y-axis
     fig = go.Figure()
     
     # Calculate bottom positions for each bar
@@ -85,33 +85,40 @@ def create_stacked_bar_chart(df, title):
         title=dict(
             text=title,
             x=0.5,
-            xanchor='center'
+            xanchor='center',
+            y=0.95
         ),
         barmode='stack',
-        xaxis_title="Month",
-        yaxis_title="Number of Studies",
+        xaxis=dict(
+            title="Month",
+            tickangle=0,
+            tickfont=dict(size=12)
+        ),
+        yaxis=dict(
+            title="Number of Studies",
+            titlefont=dict(size=14),
+            tickfont=dict(size=12)
+        ),
         showlegend=True,
         legend=dict(
-            yanchor="top",
-            y=0.99,
-            xanchor="left",
-            x=1.05
+            orientation="h",
+            yanchor="bottom",
+            y=-0.3,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=10)
         ),
         annotations=annotations,
-        margin=dict(r=200),  # Add right margin for legend
-        height=600,
-        hovermode='x unified'
+        margin=dict(l=50, r=50, t=100, b=150),
+        height=700,
+        hovermode='x unified',
+        plot_bgcolor='white',
+        paper_bgcolor='white'
     )
     
-    # Add note about N and n
-    fig.add_annotation(
-        text="Notes:<br>N = Total number of eligible studies<br>n = Number of ineligible/declined studies",
-        xref="paper", yref="paper",
-        x=1, y=0,
-        xanchor='right', yanchor='bottom',
-        showarrow=False,
-        font=dict(size=10, style='italic')
-    )
+    # Update axes lines and grid
+    fig.update_xaxes(showgrid=False, showline=True, linewidth=1, linecolor='gray')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', showline=True, linewidth=1, linecolor='gray')
     
     return fig
 
@@ -125,7 +132,6 @@ def process_excel_data(excel_file):
     df = pd.read_excel(excel_file)
     
     # Create sample data for demonstration
-    # You'll need to adjust this based on your actual data structure
     sample_data = {
         'Stage': stage_order,
         'Jul 2024': [7, 10, 29, 36, 36, 64, 20, 40],
@@ -139,7 +145,20 @@ def process_excel_data(excel_file):
     
     sample_df = pd.DataFrame(sample_data)
     
-    # Create and save interactive plots
+    # Create and save interactive plots with config options
+    config = {
+        'displayModeBar': True,
+        'displaylogo': False,
+        'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+        'toImageButtonOptions': {
+            'format': 'png',
+            'filename': 'chart',
+            'height': 700,
+            'width': 1200,
+            'scale': 2
+        }
+    }
+    
     plots = {
         'overall': create_stacked_bar_chart(sample_df, 'Overall Progress of Data Acquisition'),
         'rp1': create_stacked_bar_chart(sample_df, 'RP1 Progress of Data Acquisition'),
@@ -149,9 +168,10 @@ def process_excel_data(excel_file):
     
     # Save each plot as an HTML file
     for name, fig in plots.items():
-        fig.write_html(f'interactive_plots/{name}_progress.html', 
-                      include_plotlyjs='cdn',  # Use CDN for plotly.js
-                      full_html=False)  # Only output the div
+        fig.write_html(f'interactive_plots/{name}_progress.html',
+                      config=config,
+                      include_plotlyjs='cdn',
+                      full_html=False)
 
 def main():
     excel_file = "HEAT_Tables_0517_am.xlsx"  # Update with your Excel file path
