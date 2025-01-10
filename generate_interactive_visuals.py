@@ -17,26 +17,26 @@ stage_order = [
     'Harmonization in progress',
     'Geo-coding in progress',
     'Database finalized',
-    'Data currently unavailable',
-    'Declined Participation'
+    'Declined Participation',
+    'Data currently unavailable'
 ]
 
 color_map = {
-    'Contact procedures not initiated': '#1f77b4',
-    '1st or 2nd invites': '#ff7f0e',
-    '3rd or more invites': '#2ca02c',
-    'Next steps/application sent': '#d62728',
-    'Park': '#9467bd',
-    'Entering into DTA': '#8c564b',
-    'Batch to send to Ethics': '#e377c2',
-    'Transfer of data in progress': '#7f7f7f',
-    'Data sets in hand': '#bcbd22',
-    'Health check in progress': '#17becf',
-    'Harmonization in progress': '#1a55FF',
-    'Geo-coding in progress': '#c49c94',
-    'Database finalized': '#f7b6d2',
-    'Data currently unavailable': '#c7c7c7',
-    'Declined Participation': '#98df8a'
+    'Contact procedures not initiated': '#1f77b4',  # Blue
+    '1st or 2nd invites': '#ff7f0e',  # Orange
+    '3rd or more invites': '#2ca02c',  # Green
+    'Next steps/application sent': '#d62728',  # Red
+    'Park': '#9467bd',  # Purple
+    'Entering into DTA': '#8c564b',  # Brown
+    'Batch to send to Ethics': '#e377c2',  # Pink
+    'Transfer of data in progress': '#7f7f7f',  # Gray
+    'Data sets in hand': '#bcbd22',  # Olive
+    'Health check in progress': '#17becf',  # Cyan
+    'Harmonization in progress': '#1a55FF',  # Blue
+    'Geo-coding in progress': '#c49c94',  # Light brown
+    'Database finalized': '#f7b6d2',  # Light pink
+    'Data currently unavailable': '#c7c7c7',  # Light gray
+    'Declined Participation': '#98df8a'  # Light green
 }
 
 def create_stacked_bar_chart(df, title):
