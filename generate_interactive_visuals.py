@@ -49,117 +49,49 @@ def create_stacked_bar_chart(df, title):
     # Fill NaN values with 0
     df = df.fillna(0)
     
-    # Create figure with secondary y-axis
+    # Create figure
     fig = go.Figure()
     
     # Add traces for each stage
-    for stage in df['Stage']:
-        values = df[df['Stage'] == stage].iloc[:, 1:].values[0]
-        
-        # Create hover text
-        hover_text = [f"{stage}<br>Count: {int(v)}" for v in values]
-        
-        # Only show text for values > 5 to reduce clutter
-        text_values = []
-        for v in values:
-            if v > 5:
-                text_values.append(str(int(v)))
-            else:
-                text_values.append('')
-        
-        fig.add_trace(go.Bar(
-            name=stage,
-            x=list(months),
-            y=values,
-            text=text_values,
-            textposition='inside',
-            insidetextanchor='middle',
-            textfont=dict(size=11),
-            hovertext=hover_text,
-            marker_color=color_map.get(stage, '#333333'),
-            width=0.8  # Adjust bar width
-        ))
+    for stage in stage_order:
+        if stage in df['Stage'].values:
+            fig.add_trace(go.Bar(
+                name=stage,
+                x=df.columns[1:],  # Skip 'Stage' column
+                y=df[df['Stage'] == stage].iloc[:, 1:].values[0],
+                marker_color=color_map.get(stage, '#000000')
+            ))
     
-    # Calculate totals excluding ineligible
+    # Calculate totals excluding declined participation
     monthly_totals = df[df['Stage'] != 'Declined Participation'].iloc[:, 1:].sum()
-    ineligible = df[df['Stage'] == 'Declined Participation'].iloc[:, 1:].values[0]
+    declined = df[df['Stage'] == 'Declined Participation'].iloc[:, 1:].values[0]
     
     # Add annotations for N only
     annotations = []
-    max_y = max(monthly_totals + ineligible)
-    padding = max_y * 0.05  # Reduced padding since we only have N labels
+    for i, (total, declined_val) in enumerate(zip(monthly_totals, declined)):
+        annotations.append(dict(
+            x=df.columns[i+1],
+            y=total + declined_val,
+            text=f'N={int(total + declined_val)}',
+            showarrow=False,
+            yshift=10
+        ))
     
-    for i, (month, total, excl) in enumerate(zip(months, monthly_totals, ineligible)):
-        annotations.append(
-            dict(
-                x=month,
-                y=total + excl + padding,
-                text=f'N={int(total)}',
-                showarrow=False,
-                font=dict(size=12, color='black'),
-                yanchor='bottom'
-            )
-        )
-    
-    # Update layout with improved spacing and full width
+    # Update layout
     fig.update_layout(
-        title=dict(
-            text=title,
-            x=0.5,
-            xanchor='center',
-            y=0.98,
-            font=dict(size=20)
-        ),
+        title=title,
         barmode='stack',
-        xaxis=dict(
-            title="Month",
-            titlefont=dict(size=14),
-            tickfont=dict(size=12),
-            tickangle=0,
-            showgrid=False,
-            dtick=1  # Show all month labels
-        ),
-        yaxis=dict(
-            title="Number of Studies",
-            titlefont=dict(size=14),
-            tickfont=dict(size=12),
-            range=[0, max_y * 1.1]  # Reduced padding since we removed n labels
-        ),
         showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=-0.35,  # Adjusted for better spacing
+            y=-0.5,
             xanchor="center",
-            x=0.5,
-            font=dict(size=11),
-            bgcolor='rgba(255,255,255,0.9)',
-            bordercolor='rgba(0,0,0,0.2)',
-            borderwidth=1,
-            itemsizing='constant'
+            x=0.5
         ),
         annotations=annotations,
-        margin=dict(l=50, r=50, t=100, b=150),  # Reduced side margins
-        height=800,
-        width=None,  # Allow width to be set by container
-        autosize=True,  # Enable autosize
-        hovermode='x unified',
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        bargap=0.15,
-        bargroupgap=0.1
-    )
-    
-    # Update axes lines and grid
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='gray', showgrid=False)
-    fig.update_yaxes(
-        showline=True, 
-        linewidth=1, 
-        linecolor='gray', 
-        showgrid=True, 
-        gridwidth=1, 
-        gridcolor='lightgray',
-        dtick=50
+        height=600,
+        margin=dict(t=100, b=200)  # Increase bottom margin for legend
     )
     
     return fig
