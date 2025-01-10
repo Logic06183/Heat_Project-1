@@ -35,9 +35,6 @@ def create_stacked_bar_chart(df, title):
     # Create figure with secondary y-axis
     fig = go.Figure()
     
-    # Calculate bottom positions for each bar
-    bottom = {month: [0] * len(df) for month in months}
-    
     # Add traces for each stage
     for stage in df['Stage']:
         values = df[df['Stage'] == stage].iloc[:, 1:].values[0]
@@ -45,80 +42,117 @@ def create_stacked_bar_chart(df, title):
         # Create hover text
         hover_text = [f"{stage}<br>Count: {int(v)}" for v in values]
         
+        # Only show text for values > 5 to reduce clutter
+        text_values = []
+        for v in values:
+            if v > 5:
+                text_values.append(str(int(v)))
+            else:
+                text_values.append('')
+        
         fig.add_trace(go.Bar(
             name=stage,
             x=list(months),
             y=values,
-            text=[str(int(v)) if v > 0 else '' for v in values],
+            text=text_values,
             textposition='inside',
+            insidetextanchor='middle',
+            textfont=dict(size=11),
             hovertext=hover_text,
-            marker_color=color_map.get(stage, '#333333')
+            marker_color=color_map.get(stage, '#333333'),
+            width=0.8  # Adjust bar width
         ))
     
     # Calculate totals excluding ineligible
     monthly_totals = df[df['Stage'] != 'Ineligible/declined participation/data currently unavailable'].iloc[:, 1:].sum()
     ineligible = df[df['Stage'] == 'Ineligible/declined participation/data currently unavailable'].iloc[:, 1:].values[0]
     
-    # Add annotations for N and n
+    # Add annotations for N and n with improved positioning
     annotations = []
+    max_y = max(monthly_totals + ineligible)
+    padding = max_y * 0.08  # Dynamic padding based on chart height
+    
     for i, (month, total, excl) in enumerate(zip(months, monthly_totals, ineligible)):
+        # Position N and n with more spacing
         annotations.extend([
             dict(
                 x=month,
-                y=total + excl + 3,
+                y=total + excl + padding,  # Dynamic padding
                 text=f'N={int(total)}',
                 showarrow=False,
-                font=dict(size=12)
+                font=dict(size=12, color='black'),
+                yanchor='bottom'
             ),
             dict(
                 x=month,
-                y=total + excl + 1,
+                y=total + excl + (padding/2),  # Half padding for n
                 text=f'n={int(excl)}',
                 showarrow=False,
-                font=dict(size=10, color='red')
+                font=dict(size=11, color='red'),
+                yanchor='bottom'
             ) if excl > 0 else None
         ])
     annotations = [a for a in annotations if a is not None]
     
-    # Update layout
+    # Update layout with improved spacing
     fig.update_layout(
         title=dict(
             text=title,
             x=0.5,
             xanchor='center',
-            y=0.95
+            y=0.98,
+            font=dict(size=20)
         ),
         barmode='stack',
         xaxis=dict(
             title="Month",
+            titlefont=dict(size=14),
+            tickfont=dict(size=12),
             tickangle=0,
-            tickfont=dict(size=12)
+            showgrid=False,
+            dtick=1  # Show all month labels
         ),
         yaxis=dict(
             title="Number of Studies",
             titlefont=dict(size=14),
-            tickfont=dict(size=12)
+            tickfont=dict(size=12),
+            range=[0, max_y * 1.15]  # Add 15% padding for labels
         ),
         showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=-0.3,
+            y=-0.45,  # More space for legend
             xanchor="center",
             x=0.5,
-            font=dict(size=10)
+            font=dict(size=11),
+            bgcolor='rgba(255,255,255,0.9)',
+            bordercolor='rgba(0,0,0,0.2)',
+            borderwidth=1,
+            itemsizing='constant'  # Consistent legend item sizes
         ),
         annotations=annotations,
-        margin=dict(l=50, r=50, t=100, b=150),
-        height=700,
+        margin=dict(l=80, r=80, t=100, b=250),  # Increased bottom margin for legend
+        height=900,
+        width=1200,
         hovermode='x unified',
         plot_bgcolor='white',
-        paper_bgcolor='white'
+        paper_bgcolor='white',
+        bargap=0.15,  # Increased gap between bar groups
+        bargroupgap=0.1  # Gap between bars in a group
     )
     
     # Update axes lines and grid
-    fig.update_xaxes(showgrid=False, showline=True, linewidth=1, linecolor='gray')
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', showline=True, linewidth=1, linecolor='gray')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='gray', showgrid=False)
+    fig.update_yaxes(
+        showline=True, 
+        linewidth=1, 
+        linecolor='gray', 
+        showgrid=True, 
+        gridwidth=1, 
+        gridcolor='lightgray',
+        dtick=50  # Set y-axis tick interval to 50
+    )
     
     return fig
 
@@ -153,7 +187,7 @@ def process_excel_data(excel_file):
         'toImageButtonOptions': {
             'format': 'png',
             'filename': 'chart',
-            'height': 700,
+            'height': 900,
             'width': 1200,
             'scale': 2
         }
