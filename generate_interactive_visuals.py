@@ -2,27 +2,41 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Define stage order and colors
+# Define the order of stages for consistent visualization
 stage_order = [
+    'Contact procedures not initiated',
     '1st or 2nd invites',
     '3rd or more invites',
-    'Data sharing discussions and eligibility check',
-    'DTA in progress',
-    'DTA completed',
+    'Next steps/application sent',
+    'Park',
+    'Entering into DTA',
+    'Batch to send to Ethics',
+    'Transfer of data in progress',
     'Data sets in hand',
-    'Databases harmonised',
-    'Ineligible/declined participation/data currently unavailable'
+    'Health check in progress',
+    'Harmonization in progress',
+    'Geo-coding in progress',
+    'Database finalized',
+    'Data currently unavailable',
+    'Declined Participation'
 ]
 
 color_map = {
-    '1st or 2nd invites': '#1f77b4',
-    '3rd or more invites': '#ff7f0e',
-    'Data sharing discussions and eligibility check': '#2ca02c',
-    'DTA in progress': '#d62728',
-    'DTA completed': '#9467bd',
-    'Data sets in hand': '#8c564b',
-    'Databases harmonised': '#e377c2',
-    'Ineligible/declined participation/data currently unavailable': '#7f7f7f'
+    'Contact procedures not initiated': '#1f77b4',
+    '1st or 2nd invites': '#ff7f0e',
+    '3rd or more invites': '#2ca02c',
+    'Next steps/application sent': '#d62728',
+    'Park': '#9467bd',
+    'Entering into DTA': '#8c564b',
+    'Batch to send to Ethics': '#e377c2',
+    'Transfer of data in progress': '#7f7f7f',
+    'Data sets in hand': '#bcbd22',
+    'Health check in progress': '#17becf',
+    'Harmonization in progress': '#1a55FF',
+    'Geo-coding in progress': '#c49c94',
+    'Database finalized': '#f7b6d2',
+    'Data currently unavailable': '#c7c7c7',
+    'Declined Participation': '#98df8a'
 }
 
 def create_stacked_bar_chart(df, title):
@@ -67,8 +81,8 @@ def create_stacked_bar_chart(df, title):
         ))
     
     # Calculate totals excluding ineligible
-    monthly_totals = df[df['Stage'] != 'Ineligible/declined participation/data currently unavailable'].iloc[:, 1:].sum()
-    ineligible = df[df['Stage'] == 'Ineligible/declined participation/data currently unavailable'].iloc[:, 1:].values[0]
+    monthly_totals = df[df['Stage'] != 'Declined Participation'].iloc[:, 1:].sum()
+    ineligible = df[df['Stage'] == 'Declined Participation'].iloc[:, 1:].values[0]
     
     # Add annotations for N only
     annotations = []
@@ -156,8 +170,8 @@ def standardize_data(df, data_type='standard'):
         # For sample_data.csv format
         # Rename columns to match the standard format
         df = df.rename(columns={
-            'Contact procedures not initiated': '1st or 2nd invites',
-            'Database harmonization': 'Databases harmonised',
+            'Contact procedures not initiated': 'Contact procedures not initiated',
+            'Database harmonization': 'Batch to send to Ethics',
             'Month': 'Stage'  # Temporarily rename for processing
         })
         
@@ -248,13 +262,13 @@ def process_data():
             # Create sample data as fallback
             sample_data = {
                 'Stage': stage_order,
-                'Jul 2024': [7, 10, 29, 36, 36, 64, 20, 40],
-                'Aug 2024': [5, 8, 25, 38, 40, 68, 25, 35],
-                'Sep 2024': [3, 6, 22, 40, 45, 72, 30, 32],
-                'Oct 2024': [2, 4, 18, 42, 48, 75, 35, 30],
-                'Nov 2024': [1, 2, 15, 44, 50, 78, 40, 28],
-                'Dec 2024': [0, 0, 12, 46, 52, 80, 45, 25],
-                'Jan 2025': [0, 0, 10, 48, 54, 82, 50, 22]
+                'Jul 2024': [7, 10, 29, 36, 36, 64, 20, 40, 15, 10, 0, 0, 0, 0, 0],
+                'Aug 2024': [5, 8, 25, 38, 40, 68, 25, 35, 12, 8, 0, 0, 0, 0, 0],
+                'Sep 2024': [3, 6, 22, 40, 45, 72, 30, 32, 10, 6, 0, 0, 0, 0, 0],
+                'Oct 2024': [2, 4, 18, 42, 48, 75, 35, 30, 8, 4, 0, 0, 0, 0, 0],
+                'Nov 2024': [1, 2, 15, 44, 50, 78, 40, 28, 6, 2, 0, 0, 0, 0, 0],
+                'Dec 2024': [0, 0, 12, 46, 52, 80, 45, 25, 4, 0, 0, 0, 0, 0, 0],
+                'Jan 2025': [0, 0, 10, 48, 54, 82, 50, 22, 2, 0, 0, 0, 0, 0, 0]
             }
             sample_df = pd.DataFrame(sample_data)
             plots[name] = create_stacked_bar_chart(sample_df, f'{name.title()} Progress of Data Acquisition')
