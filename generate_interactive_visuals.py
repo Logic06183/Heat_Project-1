@@ -172,7 +172,7 @@ def main():
     for site_name, file_name in datasets.items():
         if os.path.exists(file_name):
             # Load data
-            df = load_data(file_name)
+            df = pd.read_csv(file_name, index_col='Stage')
             
             # Create and save donut chart
             donut_fig = create_donut_chart(df, site_name)
