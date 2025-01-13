@@ -96,8 +96,22 @@ def create_stacked_bar_chart(df, name):
     # Remove Total row if it exists
     df_no_total = df[~df.index.isin(['Total'])]
     
-    # Add traces for each stage in order (for legend order)
-    for stage in stage_order:
+    # Add traces for each stage in reverse order for proper stacking
+    # First add ineligible at bottom
+    if 'Ineligible/declined participation/data currently unavailable' in df_no_total.index:
+        stage_data = df_no_total.loc['Ineligible/declined participation/data currently unavailable']
+        if any(stage_data > 0):
+            fig.add_trace(go.Bar(
+                name='Ineligible/declined participation/data currently unavailable',
+                x=df_no_total.columns,
+                y=stage_data,
+                marker_color=color_map['Ineligible/declined participation/data currently unavailable'],
+                hovertemplate="Stage: Ineligible/declined participation/data currently unavailable<br>Month: %{x}<br>Studies: %{y}<extra></extra>"
+            ))
+    
+    # Then add other stages in reverse order (excluding ineligible)
+    other_stages = [s for s in reversed(stage_order) if s != 'Ineligible/declined participation/data currently unavailable']
+    for stage in other_stages:
         if stage in df_no_total.index:
             stage_data = df_no_total.loc[stage]
             if any(stage_data > 0):  # Only add trace if there's non-zero data
