@@ -24,6 +24,10 @@
             color: #333;
             text-align: center;
             margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: bold;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #eee;
         }
         .plot-container {
             margin-bottom: 40px;
@@ -33,11 +37,12 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .plot-title {
-            font-size: 1.5em;
+            font-size: 2em;
             color: #444;
-            margin-bottom: 15px;
+            margin: 20px 0 30px 0;
             padding-bottom: 10px;
             border-bottom: 2px solid #eee;
+            font-weight: bold;
         }
         .last-updated {
             text-align: center;
@@ -54,10 +59,16 @@
         .donut-chart {
             flex: 1;
             min-height: 400px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
         }
         .progress-chart {
             width: 100%;
             min-height: 600px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
         }
     </style>
 </head>
@@ -67,29 +78,29 @@
         
         <!-- RP1 Section -->
         <div class="plot-container">
-            <div class="plot-title">RP1 Progress</div>
+            <h2 class="plot-title">RP1 Progress</h2>
             <div class="chart-row">
                 <div class="donut-chart" id="rp1-donut"></div>
             </div>
-            <div class="progress-chart" id="rp1-progress"></div>
+            <div class="progress-chart" id="rp1-bar"></div>
         </div>
 
         <!-- Johannesburg Section -->
         <div class="plot-container">
-            <div class="plot-title">Johannesburg Progress</div>
+            <h2 class="plot-title">Johannesburg Progress</h2>
             <div class="chart-row">
                 <div class="donut-chart" id="johannesburg-donut"></div>
             </div>
-            <div class="progress-chart" id="johannesburg-progress"></div>
+            <div class="progress-chart" id="johannesburg-bar"></div>
         </div>
 
         <!-- Abidjan Section -->
         <div class="plot-container">
-            <div class="plot-title">Abidjan Progress</div>
+            <h2 class="plot-title">Abidjan Progress</h2>
             <div class="chart-row">
                 <div class="donut-chart" id="abidjan-donut"></div>
             </div>
-            <div class="progress-chart" id="abidjan-progress"></div>
+            <div class="progress-chart" id="abidjan-bar"></div>
         </div>
 
         <div class="last-updated">
@@ -98,42 +109,40 @@
     </div>
 
     <script>
-        // Load the plots
-        Promise.all([
-            fetch('interactive_plots/rp1_progress.html').then(response => response.text()),
-            fetch('interactive_plots/johannesburg_progress.html').then(response => response.text()),
-            fetch('interactive_plots/abidjan_progress.html').then(response => response.text())
-        ]).then(([rp1Html, jhbHtml, abjHtml]) => {
-            // Extract the plot data
-            const plotRegex = /<div id="([^"]+)">([\s\S]*?)<\/div>/;
-            
-            // RP1 plots
-            const rp1Matches = rp1Html.match(new RegExp(plotRegex, 'g'));
-            if (rp1Matches && rp1Matches.length >= 2) {
-                document.getElementById('rp1-donut').innerHTML = rp1Matches[0];
-                document.getElementById('rp1-progress').innerHTML = rp1Matches[1];
+        // Function to load HTML content
+        async function loadPlot(url, elementId) {
+            try {
+                const response = await fetch(url);
+                const html = await response.text();
+                document.getElementById(elementId).innerHTML = html;
+            } catch (error) {
+                console.error(`Error loading plot from ${url}:`, error);
+                document.getElementById(elementId).innerHTML = '<p>Error loading visualization</p>';
             }
-            
-            // Johannesburg plots
-            const jhbMatches = jhbHtml.match(new RegExp(plotRegex, 'g'));
-            if (jhbMatches && jhbMatches.length >= 2) {
-                document.getElementById('johannesburg-donut').innerHTML = jhbMatches[0];
-                document.getElementById('johannesburg-progress').innerHTML = jhbMatches[1];
+        }
+
+        // Load all plots
+        async function loadAllPlots() {
+            const plots = [
+                { url: 'interactive_plots/rp1_donut.html', id: 'rp1-donut' },
+                { url: 'interactive_plots/rp1_bar.html', id: 'rp1-bar' },
+                { url: 'interactive_plots/johannesburg_donut.html', id: 'johannesburg-donut' },
+                { url: 'interactive_plots/johannesburg_bar.html', id: 'johannesburg-bar' },
+                { url: 'interactive_plots/abidjan_donut.html', id: 'abidjan-donut' },
+                { url: 'interactive_plots/abidjan_bar.html', id: 'abidjan-bar' }
+            ];
+
+            for (const plot of plots) {
+                await loadPlot(plot.url, plot.id);
             }
-            
-            // Abidjan plots
-            const abjMatches = abjHtml.match(new RegExp(plotRegex, 'g'));
-            if (abjMatches && abjMatches.length >= 2) {
-                document.getElementById('abidjan-donut').innerHTML = abjMatches[0];
-                document.getElementById('abidjan-progress').innerHTML = abjMatches[1];
-            }
-            
+
             // Update the last updated time
             const now = new Date();
             document.getElementById('update-time').textContent = now.toLocaleString();
-        }).catch(error => {
-            console.error('Error loading plots:', error);
-        });
+        }
+
+        // Load plots when the page loads
+        window.addEventListener('load', loadAllPlots);
     </script>
 </body>
 </html>
