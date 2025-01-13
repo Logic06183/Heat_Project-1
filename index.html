@@ -3,94 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="last-updated" content="2025-01-10T16:18">
-    <title>Data Collection Progress Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>HEAT Project Data Acquisition Progress</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .plot-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .plot-title {
+            font-size: 1.5em;
+            color: #444;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .last-updated {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        .chart-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        .donut-chart {
+            flex: 1;
+            min-height: 400px;
+        }
+        .progress-chart {
+            width: 100%;
+            min-height: 600px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-content">
-                <img src="heat_logo.jpeg" alt="HEAT Logo" class="logo">
-                <h1>Data Collection Progress Dashboard</h1>
+        <h1>HEAT Project Data Acquisition Progress</h1>
+        
+        <!-- RP1 Section -->
+        <div class="plot-container">
+            <div class="plot-title">RP1 Progress</div>
+            <div class="chart-row">
+                <div class="donut-chart" id="rp1-donut"></div>
             </div>
-            <div class="buttons">
-                <a href="update_data.html" class="button">Update Data</a>
-                <a href="sample_data.csv" class="button" download>Download Data Template</a>
+            <div class="progress-chart" id="rp1-progress"></div>
+        </div>
+
+        <!-- Johannesburg Section -->
+        <div class="plot-container">
+            <div class="plot-title">Johannesburg Progress</div>
+            <div class="chart-row">
+                <div class="donut-chart" id="johannesburg-donut"></div>
             </div>
-        </header>
+            <div class="progress-chart" id="johannesburg-progress"></div>
+        </div>
 
-        <main>
-            <div class="dashboard-card overall">
-                <h2>Overall Progress</h2>
-                <div class="chart-container">
-                    <iframe src="interactive_plots/overall_progress.html" frameborder="0" class="chart"></iframe>
-                </div>
+        <!-- Abidjan Section -->
+        <div class="plot-container">
+            <div class="plot-title">Abidjan Progress</div>
+            <div class="chart-row">
+                <div class="donut-chart" id="abidjan-donut"></div>
             </div>
+            <div class="progress-chart" id="abidjan-progress"></div>
+        </div>
 
-            <div class="grid">
-                <div class="dashboard-card">
-                    <h2>RP1 Progress</h2>
-                    <div class="chart-container">
-                        <iframe src="interactive_plots/rp1_progress.html" frameborder="0" class="chart"></iframe>
-                    </div>
-                </div>
-
-                <div class="dashboard-card">
-                    <h2>Johannesburg Progress</h2>
-                    <div class="chart-container">
-                        <iframe src="interactive_plots/johannesburg_progress.html" frameborder="0" class="chart"></iframe>
-                    </div>
-                </div>
-
-                <div class="dashboard-card">
-                    <h2>Abidjan Progress</h2>
-                    <div class="chart-container">
-                        <iframe src="interactive_plots/abidjan_progress.html" frameborder="0" class="chart"></iframe>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <div class="footer-content">
-                <p class="developer">Developed by Craig Parker</p>
-                <p class="copyright">&copy; 2025 HE2AT Project</p>
-            </div>
-        </footer>
-    </div>
-
-    <!-- Modal for full-size image viewing -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img id="modalImage" class="modal-content">
-        <div id="caption"></div>
+        <div class="last-updated">
+            Last updated: <span id="update-time"></span>
+        </div>
     </div>
 
     <script>
-        function openModal(imgSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            modal.style.display = 'block';
-            modalImg.src = imgSrc;
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.style.display = 'none';
-        }
-
-        // Close modal when pressing Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
+        // Load the plots
+        Promise.all([
+            fetch('interactive_plots/rp1_progress.html').then(response => response.text()),
+            fetch('interactive_plots/johannesburg_progress.html').then(response => response.text()),
+            fetch('interactive_plots/abidjan_progress.html').then(response => response.text())
+        ]).then(([rp1Html, jhbHtml, abjHtml]) => {
+            // Extract the plot data
+            const plotRegex = /<div id="([^"]+)">([\s\S]*?)<\/div>/;
+            
+            // RP1 plots
+            const rp1Matches = rp1Html.match(new RegExp(plotRegex, 'g'));
+            if (rp1Matches && rp1Matches.length >= 2) {
+                document.getElementById('rp1-donut').innerHTML = rp1Matches[0];
+                document.getElementById('rp1-progress').innerHTML = rp1Matches[1];
             }
+            
+            // Johannesburg plots
+            const jhbMatches = jhbHtml.match(new RegExp(plotRegex, 'g'));
+            if (jhbMatches && jhbMatches.length >= 2) {
+                document.getElementById('johannesburg-donut').innerHTML = jhbMatches[0];
+                document.getElementById('johannesburg-progress').innerHTML = jhbMatches[1];
+            }
+            
+            // Abidjan plots
+            const abjMatches = abjHtml.match(new RegExp(plotRegex, 'g'));
+            if (abjMatches && abjMatches.length >= 2) {
+                document.getElementById('abidjan-donut').innerHTML = abjMatches[0];
+                document.getElementById('abidjan-progress').innerHTML = abjMatches[1];
+            }
+            
+            // Update the last updated time
+            const now = new Date();
+            document.getElementById('update-time').textContent = now.toLocaleString();
+        }).catch(error => {
+            console.error('Error loading plots:', error);
         });
-
-        // Prevent modal from closing when clicking on the image
-        document.getElementById('modalImage').onclick = function(event) {
-            event.stopPropagation();
-        };
     </script>
 </body>
 </html>

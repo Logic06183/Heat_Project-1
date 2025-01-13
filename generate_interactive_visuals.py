@@ -39,6 +39,36 @@ color_map = {
     'Declined Participation': '#98df8a'  # Light green
 }
 
+def create_donut_chart(df, title):
+    """Create a donut chart for the latest month's data"""
+    latest_month = df.columns[-1]  # Get the last month
+    latest_data = df[df['Stage'] != 'Total'].copy()
+    latest_data = latest_data.set_index('Stage').reindex(stage_order)
+    
+    # Create donut chart
+    fig = go.Figure(data=[go.Pie(
+        labels=latest_data.index,
+        values=latest_data[latest_month],
+        hole=.4,
+        marker_colors=[color_map[stage] for stage in latest_data.index],
+        hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>"
+    )])
+    
+    # Update layout
+    fig.update_layout(
+        title=f"{title}<br>{latest_month} Distribution",
+        showlegend=True,
+        legend_title_text='Stages',
+        annotations=[dict(
+            text=f'N={int(latest_data[latest_month].sum())}',
+            x=0.5, y=0.5,
+            font_size=20,
+            showarrow=False
+        )]
+    )
+    
+    return fig
+
 def create_stacked_bar_chart(df, title):
     """Create an interactive stacked bar chart showing progress"""
     # Only keep the last 6 months of data
@@ -214,6 +244,27 @@ def process_data():
                       config=config,
                       include_plotlyjs='cdn',
                       full_html=False)
+
+    # Create donut charts for latest month's data
+    for name, (csv_file, data_type) in data_sources.items():
+        try:
+            # Read CSV file
+            df = pd.read_csv(csv_file)
+            
+            # Standardize the data format
+            df = standardize_data(df, data_type)
+            
+            # Create donut chart
+            donut_fig = create_donut_chart(df, f'{name.title()}')
+            
+            # Save the donut chart as an HTML file
+            donut_fig.write_html(f'interactive_plots/{name}_latest_month.html',
+                                config=config,
+                                include_plotlyjs='cdn',
+                                full_html=False)
+        
+        except FileNotFoundError:
+            print(f"Warning: {csv_file} not found. Skipping donut chart for {name}.")
 
 def main():
     process_data()
