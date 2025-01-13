@@ -17,8 +17,8 @@ stage_order = [
     'Harmonization in progress',
     'Geo-coding in progress',
     'Database finalized',
-    'Declined Participation',
-    'Data currently unavailable'
+    'Data currently unavailable',
+    'Declined Participation'
 ]
 
 color_map = {
@@ -49,10 +49,7 @@ def create_stacked_bar_chart(df, title):
     # Prepare the data
     df_subset = df_subset[df_subset['Stage'] != 'Total'].copy()  # Remove Total row
     df_subset = df_subset.set_index('Stage').reindex(stage_order).reset_index()
-    months = df_subset.columns[1:]
-    
-    # Fill NaN values with 0
-    df_subset = df_subset.fillna(0)
+    months = df_subset.columns[1:]  # Skip 'Stage' column
     
     # Create figure
     fig = go.Figure()
@@ -62,9 +59,10 @@ def create_stacked_bar_chart(df, title):
         if stage in df_subset['Stage'].values:
             fig.add_trace(go.Bar(
                 name=stage,
-                x=df_subset.columns[1:],  # Skip 'Stage' column
+                x=months,
                 y=df_subset[df_subset['Stage'] == stage].iloc[:, 1:].values[0],
-                marker_color=color_map.get(stage, '#000000')
+                marker_color=color_map.get(stage, '#000000'),
+                hovertemplate=f"Stage: {stage}<br>Month: %{{x}}<br>Studies: %{{y}}<extra></extra>"
             ))
     
     # Calculate totals excluding declined participation
