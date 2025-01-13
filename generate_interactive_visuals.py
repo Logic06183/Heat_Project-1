@@ -7,7 +7,7 @@ os.makedirs('interactive_plots', exist_ok=True)
 
 # Define the order of stages for consistent visualization (in reverse order for stacking)
 stage_order = [
-    'Ineligible/declined participation/data currently unavailable',  # Final outcomes at top
+    'Database ready for analysis',  # Final stage at top
     'Database harmonization',
     'Data sets in hand',
     'DTA completed',
@@ -15,7 +15,8 @@ stage_order = [
     'Data sharing discussions and eligibility check',
     '3rd or more invites',
     '1st or 2nd invites',
-    'Contact procedures not initiated'  # Initial stage at bottom
+    'Contact procedures not initiated',
+    'Ineligible/declined participation/data currently unavailable'  # Move to bottom
 ]
 
 # Define colors for each stage
@@ -28,7 +29,8 @@ color_map = {
     'DTA completed': '#8c564b',  # Brown
     'Data sets in hand': '#bcbd22',  # Olive
     'Database harmonization': '#17becf',  # Cyan
-    'Ineligible/declined participation/data currently unavailable': '#e377c2'  # Pink
+    'Database ready for analysis': '#e377c2',  # Pink
+    'Ineligible/declined participation/data currently unavailable': '#7f7f7f'  # Gray
 }
 
 def create_donut_chart(df, name):
