@@ -1,6 +1,5 @@
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import os
 
 # Create directory for interactive plots if it doesn't exist
@@ -43,88 +42,115 @@ color_map = {
     'Declined Participation': '#98df8a'  # Light green
 }
 
-def create_combined_plot(df, name):
-    """Create a combined figure with both donut and bar charts"""
-    # Create subplot figure
-    fig = make_subplots(
-        rows=2, cols=1,
-        specs=[[{"type": "pie"}],
-               [{"type": "bar"}]],
-        vertical_spacing=0.1,
-        subplot_titles=(f"{name} Latest Month Distribution", f"{name} Progress Over Time"),
-        row_heights=[0.4, 0.6]
-    )
-
-    # Get latest month data for donut chart
+def create_donut_chart(df, name):
+    """Create a donut chart for the latest month's data"""
+    # Get latest month data
     latest_month = df.columns[-1]
     latest_data = df[df['Stage'] != 'Total'].copy()
     latest_data = latest_data.set_index('Stage').reindex(stage_order)
-
-    # Add donut chart
-    fig.add_trace(
-        go.Pie(
-            labels=latest_data.index,
-            values=latest_data[latest_month],
-            hole=.4,
-            marker_colors=[color_map[stage] for stage in latest_data.index],
-            hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>",
-            showlegend=True
+    
+    # Filter out stages with zero values
+    latest_data = latest_data[latest_data[latest_month] > 0]
+    
+    # Create donut chart
+    fig = go.Figure(data=[go.Pie(
+        labels=latest_data.index,
+        values=latest_data[latest_month],
+        hole=.5,  # Increased hole size
+        marker_colors=[color_map[stage] for stage in latest_data.index],
+        hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>",
+        textinfo='value',  # Show only the values
+        textposition='inside',
+        showlegend=True
+    )])
+    
+    # Update layout
+    fig.update_layout(
+        title=dict(
+            text=f"{name} Distribution - {latest_month}",
+            x=0.5,
+            y=0.95,
+            xanchor='center',
+            yanchor='top',
+            font=dict(size=20)
         ),
-        row=1, col=1
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.5,
+            xanchor="center",
+            x=0.5
+        ),
+        height=600,
+        margin=dict(t=100, b=150),  # Increased bottom margin for legend
+        annotations=[dict(
+            text=f'Total Studies: {int(latest_data[latest_month].sum())}',
+            x=0.5, y=0.5,
+            font_size=16,
+            showarrow=False
+        )]
     )
+    
+    return fig
 
-    # Add bar chart traces
+def create_stacked_bar_chart(df, name):
+    """Create an interactive stacked bar chart showing progress"""
+    # Create figure
+    fig = go.Figure()
+    
+    # Add traces for each stage
     months = df.columns[1:]  # Skip 'Stage' column
     for stage in stage_order:
         if stage in df['Stage'].values:
-            fig.add_trace(
-                go.Bar(
+            stage_data = df[df['Stage'] == stage].iloc[:, 1:].values[0]
+            if any(stage_data > 0):  # Only add trace if there's non-zero data
+                fig.add_trace(go.Bar(
                     name=stage,
                     x=months,
-                    y=df[df['Stage'] == stage].iloc[:, 1:].values[0],
+                    y=stage_data,
                     marker_color=color_map[stage],
                     hovertemplate=f"Stage: {stage}<br>Month: %{{x}}<br>Studies: %{{y}}<extra></extra>"
-                ),
-                row=2, col=1
-            )
-
-    # Calculate monthly totals for annotations
-    monthly_totals = df[months].sum()
-
+                ))
+    
+    # Calculate monthly totals
+    monthly_totals = df[df['Stage'] != 'Total'].iloc[:, 1:].sum()
+    
     # Update layout
     fig.update_layout(
-        title=f"{name} Data Acquisition Progress",
+        title=dict(
+            text=f"{name} Progress Over Time",
+            x=0.5,
+            y=0.95,
+            xanchor='center',
+            yanchor='top',
+            font=dict(size=20)
+        ),
         barmode='stack',
         showlegend=True,
-        legend_title_text='Stages',
-        height=1000,
-        margin=dict(t=100, b=50, l=50, r=50),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.5,
+            xanchor="center",
+            x=0.5
+        ),
+        xaxis_title="Month",
+        yaxis_title="Number of Studies",
+        height=600,
+        margin=dict(t=100, b=150),  # Increased bottom margin for legend
+        hovermode='closest',
         annotations=[
             dict(
                 x=month,
                 y=total,
                 text=f'N={int(total)}',
                 showarrow=False,
-                yshift=10,
-                xref='x2',
-                yref='y2'
+                yshift=10
             ) for month, total in monthly_totals.items()
-        ] + [
-            dict(
-                text=f'N={int(latest_data[latest_month].sum())}',
-                x=0.5, y=0.5,
-                font_size=20,
-                showarrow=False,
-                xref='paper',
-                yref='paper'
-            )
         ]
     )
-
-    # Update axes
-    fig.update_xaxes(title_text="Month", row=2, col=1)
-    fig.update_yaxes(title_text="Number of Studies", row=2, col=1)
-
+    
     return fig
 
 def process_data():
@@ -136,25 +162,29 @@ def process_data():
     
     # Create visualizations for each dataset
     for df, name in [(rp1_df, 'RP1'), (johannesburg_df, 'Johannesburg'), (abidjan_df, 'Abidjan')]:
-        # Create combined plot
-        fig = create_combined_plot(df, name)
-        
-        # Save the figure with full HTML
-        fig.write_html(
-            f'interactive_plots/{name.lower()}_progress.html',
+        # Create and save donut chart
+        donut_fig = create_donut_chart(df, name)
+        donut_fig.write_html(
+            f'interactive_plots/{name.lower()}_donut.html',
             include_plotlyjs=True,
             full_html=True,
             config={
                 'displayModeBar': True,
                 'displaylogo': False,
-                'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
-                'toImageButtonOptions': {
-                    'format': 'png',
-                    'filename': f'{name.lower()}_progress',
-                    'height': 1000,
-                    'width': 1200,
-                    'scale': 2
-                }
+                'modeBarButtonsToRemove': ['lasso2d', 'select2d']
+            }
+        )
+        
+        # Create and save bar chart
+        bar_fig = create_stacked_bar_chart(df, name)
+        bar_fig.write_html(
+            f'interactive_plots/{name.lower()}_bar.html',
+            include_plotlyjs=True,
+            full_html=True,
+            config={
+                'displayModeBar': True,
+                'displaylogo': False,
+                'modeBarButtonsToRemove': ['lasso2d', 'select2d']
             }
         )
 

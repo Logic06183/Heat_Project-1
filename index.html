@@ -19,14 +19,42 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
-            color: #333;
+        .header {
             text-align: center;
             margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .header img {
+            max-width: 200px;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            color: #333;
+            margin: 10px 0;
             font-size: 2.5em;
             font-weight: bold;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #eee;
+        }
+        .header p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+        .developer-info {
+            font-style: italic;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        h2.plot-title {
+            font-size: 2em;
+            color: #444;
+            margin: 20px 0 30px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-weight: bold;
         }
         .plot-container {
             margin-bottom: 40px;
@@ -35,23 +63,30 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .plot-title {
-            font-size: 2em;
-            color: #444;
-            margin: 20px 0 30px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
-            font-weight: bold;
-        }
         .last-updated {
             text-align: center;
             color: #666;
             font-size: 0.9em;
             margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
-        .progress-plot {
+        .chart-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        .donut-chart {
+            flex: 1;
+            min-height: 600px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .progress-chart {
             width: 100%;
-            height: 1000px;
+            min-height: 600px;
             border: 1px solid #eee;
             border-radius: 8px;
             padding: 10px;
@@ -61,24 +96,38 @@
 </head>
 <body>
     <div class="container">
-        <h1>HEAT Project Data Acquisition Progress</h1>
+        <div class="header">
+            <img src="heat_logo.jpeg" alt="HEAT Project Logo">
+            <h1>HEAT Project Data Acquisition Progress</h1>
+            <p>Interactive visualization of data acquisition progress across different regions</p>
+            <p class="developer-info">Developed by the HEAT Project Data Team at Wits Health Consortium</p>
+        </div>
         
         <!-- RP1 Section -->
         <div class="plot-container">
             <h2 class="plot-title">RP1 Progress</h2>
-            <iframe class="progress-plot" src="interactive_plots/rp1_progress.html" frameborder="0"></iframe>
+            <div class="chart-row">
+                <iframe class="donut-chart" src="interactive_plots/rp1_donut.html" frameborder="0"></iframe>
+            </div>
+            <iframe class="progress-chart" src="interactive_plots/rp1_bar.html" frameborder="0"></iframe>
         </div>
 
         <!-- Johannesburg Section -->
         <div class="plot-container">
             <h2 class="plot-title">Johannesburg Progress</h2>
-            <iframe class="progress-plot" src="interactive_plots/johannesburg_progress.html" frameborder="0"></iframe>
+            <div class="chart-row">
+                <iframe class="donut-chart" src="interactive_plots/johannesburg_donut.html" frameborder="0"></iframe>
+            </div>
+            <iframe class="progress-chart" src="interactive_plots/johannesburg_bar.html" frameborder="0"></iframe>
         </div>
 
         <!-- Abidjan Section -->
         <div class="plot-container">
             <h2 class="plot-title">Abidjan Progress</h2>
-            <iframe class="progress-plot" src="interactive_plots/abidjan_progress.html" frameborder="0"></iframe>
+            <div class="chart-row">
+                <iframe class="donut-chart" src="interactive_plots/abidjan_donut.html" frameborder="0"></iframe>
+            </div>
+            <iframe class="progress-chart" src="interactive_plots/abidjan_bar.html" frameborder="0"></iframe>
         </div>
 
         <div class="last-updated">
