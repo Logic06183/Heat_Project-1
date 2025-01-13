@@ -42,54 +42,68 @@ color_map = {
     'Declined Participation': '#98df8a'  # Light green
 }
 
-def create_donut_chart(df, name):
-    """Create a donut chart for the latest month's data"""
-    # Get latest month data
-    latest_month = df.columns[-1]
-    latest_data = df[df['Stage'] != 'Total'].copy()
-    latest_data = latest_data.set_index('Stage').reindex(stage_order)
+def create_donut_chart(df, site_name):
+    # Get the latest month's data
+    latest_month = df.index.max()
+    latest_data = df.loc[latest_month]
     
-    # Filter out stages with zero values
-    latest_data = latest_data[latest_data[latest_month] > 0]
+    # Define the logical order of stages
+    stage_order = [
+        'Contact procedures not initiated',
+        '1st or 2nd invites',
+        '3rd or more invites',
+        'Next steps/application sent',
+        'Data currently unavailable',
+        'Entering into DTA',
+        'Data sets in hand',
+        'Transfer of data in progress',
+        'Health check in progress',
+        'Harmonization in progress',
+        'Geo-coding in progress',
+        'Database finalized',
+        'Batch to send to Ethics',
+        'Park',
+        'Declined Participation'
+    ]
     
-    # Create donut chart
+    # Filter out stages with zero values and maintain the logical order
+    non_zero_stages = []
+    values = []
+    for stage in stage_order:
+        if stage in latest_data.index and latest_data[stage] > 0:
+            non_zero_stages.append(stage)
+            values.append(latest_data[stage])
+    
+    # Calculate percentages
+    total = sum(values)
+    percentages = [f'{(value/total)*100:.2f}%' for value in values]
+    
+    # Create the donut chart
     fig = go.Figure(data=[go.Pie(
-        labels=latest_data.index,
-        values=latest_data[latest_month],
-        hole=.5,  # Increased hole size
-        marker_colors=[color_map[stage] for stage in latest_data.index],
-        hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>",
-        textinfo='value',  # Show only the values
+        labels=non_zero_stages,
+        values=values,
+        hole=0.6,
+        textinfo='percent',
         textposition='inside',
-        showlegend=True
+        hovertemplate="%{label}<br>%{value} studies<br>%{percent}<extra></extra>",
+        direction='clockwise',
+        sort=False  # Prevent automatic sorting to maintain our order
     )])
     
     # Update layout
     fig.update_layout(
-        title=dict(
-            text=f"{name} Distribution - {latest_month}",
-            x=0.5,
-            y=0.95,
-            xanchor='center',
-            yanchor='top',
-            font=dict(size=20)
-        ),
+        title=f"{site_name} Latest Month Distribution",
+        annotations=[dict(text=f'N={total}', x=0.5, y=0.5, font_size=20, showarrow=False)],
         showlegend=True,
         legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=-0.5,
-            xanchor="center",
-            x=0.5
+            orientation="v",
+            yanchor="middle",
+            y=0.5,
+            xanchor="right",
+            x=1.1
         ),
-        height=600,
-        margin=dict(t=100, b=150),  # Increased bottom margin for legend
-        annotations=[dict(
-            text=f'Total Studies: {int(latest_data[latest_month].sum())}',
-            x=0.5, y=0.5,
-            font_size=16,
-            showarrow=False
-        )]
+        margin=dict(t=60, l=20, r=150, b=20),
+        height=600
     )
     
     return fig
