@@ -7,29 +7,29 @@ os.makedirs('interactive_plots', exist_ok=True)
 
 # Define the order of stages for consistent visualization
 stage_order = [
-    'Contact procedures not initiated',  # Start of process
-    '1st or 2nd invites',
-    '3rd or more invites',
-    'Data sharing discussions and eligibility check',
-    'DTA in progress',
-    'DTA completed',
-    'Data sets in hand',
+    'Database ready for analysis',  # Final success at top
     'Database harmonization',
-    'Database ready for analysis',  # Final success
-    'Ineligible/declined participation/data currently unavailable'  # Final non-success
+    'Data sets in hand',
+    'DTA completed',
+    'DTA in progress',
+    'Data sharing discussions and eligibility check',
+    '3rd or more invites',
+    '1st or 2nd invites',
+    'Contact procedures not initiated',
+    'Ineligible/declined participation/data currently unavailable'  # Always at bottom
 ]
 
 # Define colors for each stage
 color_map = {
-    'Contact procedures not initiated': '#1f77b4',  # Blue
-    '1st or 2nd invites': '#ff7f0e',  # Orange
-    '3rd or more invites': '#2ca02c',  # Green
-    'Data sharing discussions and eligibility check': '#d62728',  # Red
-    'DTA in progress': '#9467bd',  # Purple
-    'DTA completed': '#8c564b',  # Brown
-    'Data sets in hand': '#bcbd22',  # Olive
-    'Database harmonization': '#17becf',  # Cyan
     'Database ready for analysis': '#e377c2',  # Pink
+    'Database harmonization': '#17becf',  # Cyan
+    'Data sets in hand': '#bcbd22',  # Olive
+    'DTA completed': '#8c564b',  # Brown
+    'DTA in progress': '#9467bd',  # Purple
+    'Data sharing discussions and eligibility check': '#d62728',  # Red
+    '3rd or more invites': '#2ca02c',  # Green
+    '1st or 2nd invites': '#ff7f0e',  # Orange
+    'Contact procedures not initiated': '#1f77b4',  # Blue
     'Ineligible/declined participation/data currently unavailable': '#7f7f7f'  # Gray
 }
 
