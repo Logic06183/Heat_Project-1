@@ -5,18 +5,18 @@ import os
 # Create directory for interactive plots if it doesn't exist
 os.makedirs('interactive_plots', exist_ok=True)
 
-# Define the order of stages for consistent visualization (in reverse order for stacking)
+# Define the order of stages for consistent visualization
 stage_order = [
-    'Database ready for analysis',  # Final stage at top
-    'Database harmonization',
-    'Data sets in hand',
-    'DTA completed',
-    'DTA in progress',
-    'Data sharing discussions and eligibility check',
-    '3rd or more invites',
+    'Contact procedures not initiated',  # Start of process
     '1st or 2nd invites',
-    'Contact procedures not initiated',
-    'Ineligible/declined participation/data currently unavailable'  # Move to bottom
+    '3rd or more invites',
+    'Data sharing discussions and eligibility check',
+    'DTA in progress',
+    'DTA completed',
+    'Data sets in hand',
+    'Database harmonization',
+    'Database ready for analysis',  # Final success
+    'Ineligible/declined participation/data currently unavailable'  # Final non-success
 ]
 
 # Define colors for each stage
@@ -128,7 +128,7 @@ def create_stacked_bar_chart(df, name):
         ),
         showlegend=True,
         legend=dict(
-            traceorder='reversed',  # Reverse legend order to match visual stack
+            traceorder='normal',  # Normal order to match stage_order
             orientation="h",
             yanchor="bottom",
             y=-0.5,
