@@ -1,16 +1,21 @@
-Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024
-Contact procedures not initiated,8,7,6,5,4,3
-1st or 2nd invites,0,0,0,0,0,0
-3rd or more invites,0,0,0,0,0,0
-Next steps/application sent,15,14,13,12,12,12
-Park,0,0,0,0,0,0
-Entering into DTA,45,44,43,42,41,40
-Batch to send to Ethics,0,0,0,0,0,0
-Transfer of data in progress,12,11,10,9,8,7
-Data sets in hand,3,2,2,1,0,0
-Health check in progress,5,6,7,8,8,9
-Harmonization in progress,2,2,2,3,3,3
-Geo-coding in progress,0,1,2,2,3,6
-Database finalized,0,2,4,6,8,9
-Data currently unavailable,10,8,7,5,4,2
-Declined Participation,0,0,0,0,0,0
+Stage,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024
+Contact procedures not initiated,0,0,0,0,0
+1st or 2nd invites,11,3,2,2,2
+3rd or more invites,53,26,25,24,24
+Next steps/application sent,0,0,0,0,0
+Park,0,0,0,0,0
+Entering into DTA,0,0,0,0,0
+Batch to send to Ethics,0,0,0,0,0
+Transfer of data in progress,0,0,0,0,0
+Data sets in hand,25,22,23,23,24
+Health check in progress,0,0,0,0,0
+Harmonization in progress,0,0,0,0,0
+Geo-coding in progress,0,0,0,0,0
+Database finalized,0,0,0,0,0
+Data currently unavailable,0,0,0,0,0
+Declined Participation,0,0,0,0,0
+Data sharing discussions and eligibility check,44,43,47,44,44
+DTA in progress,34,39,35,33,31
+DTA completed,4,1,5,7,8
+Database harmonization,2,5,5,6,6
+Ineligible/declined participation/data currently unavailable,49,83,80,83,83
