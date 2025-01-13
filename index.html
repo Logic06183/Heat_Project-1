@@ -10,87 +10,124 @@
             margin: 0;
             padding: 20px;
             background-color: #f5f5f5;
+            color: #333;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .header img {
-            max-width: 200px;
-            margin-bottom: 15px;
+            max-width: 220px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
         .header h1 {
-            color: #333;
-            margin: 10px 0;
-            font-size: 2.5em;
+            color: #2c3e50;
+            margin: 15px 0;
+            font-size: 2.8em;
             font-weight: bold;
+            letter-spacing: -0.5px;
         }
         .header p {
-            color: #666;
-            margin: 5px 0;
-            font-size: 1.1em;
+            color: #505c6c;
+            margin: 8px 0;
+            font-size: 1.2em;
+            line-height: 1.5;
         }
         .developer-info {
-            font-style: italic;
-            color: #888;
-            font-size: 0.9em;
-            margin-top: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 1em;
+            color: #505c6c;
+        }
+        .developer-name {
+            font-weight: bold;
+            color: #2c3e50;
         }
         h2.plot-title {
-            font-size: 2em;
-            color: #444;
-            margin: 20px 0 30px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin: 25px 0 35px 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #e9ecef;
             font-weight: bold;
         }
         .plot-container {
-            margin-bottom: 40px;
-            padding: 20px;
+            margin-bottom: 50px;
+            padding: 25px;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .plot-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         .last-updated {
             text-align: center;
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 20px;
+            color: #6c757d;
+            font-size: 0.95em;
+            margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 2px solid #e9ecef;
         }
         .chart-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 20px;
+            margin-bottom: 25px;
+            gap: 25px;
         }
         .donut-chart {
             flex: 1;
             min-height: 600px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.2s ease;
+        }
+        .donut-chart:hover {
+            border-color: #dee2e6;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
         }
         .progress-chart {
             width: 100%;
             min-height: 600px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            transition: all 0.2s ease;
+        }
+        .progress-chart:hover {
+            border-color: #dee2e6;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+            color: #6c757d;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 0.95em;
         }
     </style>
 </head>
@@ -100,7 +137,10 @@
             <img src="heat_logo.jpeg" alt="HEAT Project Logo">
             <h1>HEAT Project Data Acquisition Progress</h1>
             <p>Interactive visualization of data acquisition progress across different regions</p>
-            <p class="developer-info">Developed by the HEAT Project Data Team at Wits Health Consortium</p>
+            <div class="developer-info">
+                <p>Developed by <span class="developer-name">Craig Parker</span></p>
+                <p>HEAT Project Data Team at Wits Health Consortium</p>
+            </div>
         </div>
         
         <!-- RP1 Section -->
@@ -130,15 +170,25 @@
             <iframe class="progress-chart" src="interactive_plots/abidjan_bar.html" frameborder="0"></iframe>
         </div>
 
-        <div class="last-updated">
-            Last updated: <span id="update-time"></span>
+        <div class="footer">
+            <p>Last updated: <span id="update-time"></span></p>
+            <p> 2025 HEAT Project. All rights reserved.</p>
         </div>
     </div>
 
     <script>
-        // Update the last updated time
+        // Update the last updated time in South African format
         const now = new Date();
-        document.getElementById('update-time').textContent = now.toLocaleString();
+        const options = {
+            timeZone: 'Africa/Johannesburg',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+        document.getElementById('update-time').textContent = now.toLocaleString('en-ZA', options) + ' SAST';
     </script>
 </body>
 </html>
