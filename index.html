@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HEAT Project Data Acquisition Progress</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,25 +49,13 @@
             font-size: 0.9em;
             margin-top: 20px;
         }
-        .chart-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 20px;
-        }
-        .donut-chart {
-            flex: 1;
-            min-height: 400px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 10px;
-        }
-        .progress-chart {
+        .progress-plot {
             width: 100%;
-            min-height: 600px;
+            height: 1000px;
             border: 1px solid #eee;
             border-radius: 8px;
             padding: 10px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -79,28 +66,19 @@
         <!-- RP1 Section -->
         <div class="plot-container">
             <h2 class="plot-title">RP1 Progress</h2>
-            <div class="chart-row">
-                <div class="donut-chart" id="rp1-donut"></div>
-            </div>
-            <div class="progress-chart" id="rp1-bar"></div>
+            <iframe class="progress-plot" src="interactive_plots/rp1_progress.html" frameborder="0"></iframe>
         </div>
 
         <!-- Johannesburg Section -->
         <div class="plot-container">
             <h2 class="plot-title">Johannesburg Progress</h2>
-            <div class="chart-row">
-                <div class="donut-chart" id="johannesburg-donut"></div>
-            </div>
-            <div class="progress-chart" id="johannesburg-bar"></div>
+            <iframe class="progress-plot" src="interactive_plots/johannesburg_progress.html" frameborder="0"></iframe>
         </div>
 
         <!-- Abidjan Section -->
         <div class="plot-container">
             <h2 class="plot-title">Abidjan Progress</h2>
-            <div class="chart-row">
-                <div class="donut-chart" id="abidjan-donut"></div>
-            </div>
-            <div class="progress-chart" id="abidjan-bar"></div>
+            <iframe class="progress-plot" src="interactive_plots/abidjan_progress.html" frameborder="0"></iframe>
         </div>
 
         <div class="last-updated">
@@ -109,40 +87,9 @@
     </div>
 
     <script>
-        // Function to load HTML content
-        async function loadPlot(url, elementId) {
-            try {
-                const response = await fetch(url);
-                const html = await response.text();
-                document.getElementById(elementId).innerHTML = html;
-            } catch (error) {
-                console.error(`Error loading plot from ${url}:`, error);
-                document.getElementById(elementId).innerHTML = '<p>Error loading visualization</p>';
-            }
-        }
-
-        // Load all plots
-        async function loadAllPlots() {
-            const plots = [
-                { url: 'interactive_plots/rp1_donut.html', id: 'rp1-donut' },
-                { url: 'interactive_plots/rp1_bar.html', id: 'rp1-bar' },
-                { url: 'interactive_plots/johannesburg_donut.html', id: 'johannesburg-donut' },
-                { url: 'interactive_plots/johannesburg_bar.html', id: 'johannesburg-bar' },
-                { url: 'interactive_plots/abidjan_donut.html', id: 'abidjan-donut' },
-                { url: 'interactive_plots/abidjan_bar.html', id: 'abidjan-bar' }
-            ];
-
-            for (const plot of plots) {
-                await loadPlot(plot.url, plot.id);
-            }
-
-            // Update the last updated time
-            const now = new Date();
-            document.getElementById('update-time').textContent = now.toLocaleString();
-        }
-
-        // Load plots when the page loads
-        window.addEventListener('load', loadAllPlots);
+        // Update the last updated time
+        const now = new Date();
+        document.getElementById('update-time').textContent = now.toLocaleString();
     </script>
 </body>
 </html>

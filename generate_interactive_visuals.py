@@ -1,6 +1,10 @@
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import os
+
+# Create directory for interactive plots if it doesn't exist
+os.makedirs('interactive_plots', exist_ok=True)
 
 # Define the order of stages for consistent visualization
 stage_order = [
@@ -39,6 +43,90 @@ color_map = {
     'Declined Participation': '#98df8a'  # Light green
 }
 
+def create_combined_plot(df, name):
+    """Create a combined figure with both donut and bar charts"""
+    # Create subplot figure
+    fig = make_subplots(
+        rows=2, cols=1,
+        specs=[[{"type": "pie"}],
+               [{"type": "bar"}]],
+        vertical_spacing=0.1,
+        subplot_titles=(f"{name} Latest Month Distribution", f"{name} Progress Over Time"),
+        row_heights=[0.4, 0.6]
+    )
+
+    # Get latest month data for donut chart
+    latest_month = df.columns[-1]
+    latest_data = df[df['Stage'] != 'Total'].copy()
+    latest_data = latest_data.set_index('Stage').reindex(stage_order)
+
+    # Add donut chart
+    fig.add_trace(
+        go.Pie(
+            labels=latest_data.index,
+            values=latest_data[latest_month],
+            hole=.4,
+            marker_colors=[color_map[stage] for stage in latest_data.index],
+            hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>",
+            showlegend=True
+        ),
+        row=1, col=1
+    )
+
+    # Add bar chart traces
+    months = df.columns[1:]  # Skip 'Stage' column
+    for stage in stage_order:
+        if stage in df['Stage'].values:
+            fig.add_trace(
+                go.Bar(
+                    name=stage,
+                    x=months,
+                    y=df[df['Stage'] == stage].iloc[:, 1:].values[0],
+                    marker_color=color_map[stage],
+                    hovertemplate=f"Stage: {stage}<br>Month: %{{x}}<br>Studies: %{{y}}<extra></extra>"
+                ),
+                row=2, col=1
+            )
+
+    # Calculate monthly totals for annotations
+    monthly_totals = df[months].sum()
+
+    # Update layout
+    fig.update_layout(
+        title=f"{name} Data Acquisition Progress",
+        barmode='stack',
+        showlegend=True,
+        legend_title_text='Stages',
+        height=1000,
+        margin=dict(t=100, b=50, l=50, r=50),
+        annotations=[
+            dict(
+                x=month,
+                y=total,
+                text=f'N={int(total)}',
+                showarrow=False,
+                yshift=10,
+                xref='x2',
+                yref='y2'
+            ) for month, total in monthly_totals.items()
+        ] + [
+            dict(
+                text=f'N={int(latest_data[latest_month].sum())}',
+                x=0.5, y=0.5,
+                font_size=20,
+                showarrow=False,
+                xref='paper',
+                yref='paper'
+            )
+        ]
+    )
+
+    # Update axes
+    fig.update_xaxes(title_text="Month", row=2, col=1)
+    fig.update_yaxes(title_text="Number of Studies", row=2, col=1)
+
+    return fig
+
 def process_data():
     """Process CSV data and create interactive visualizations"""
     # Read the CSV files
@@ -47,74 +135,28 @@ def process_data():
     rp1_df = pd.read_csv('rp1_data.csv')
     
     # Create visualizations for each dataset
-    for df, name in [(rp1_df, 'rp1'), (johannesburg_df, 'johannesburg'), (abidjan_df, 'abidjan')]:
-        # Get the latest month's data
-        latest_month = df.columns[-1]
-        latest_data = df[df['Stage'] != 'Total'].copy()
-        latest_data = latest_data.set_index('Stage').reindex(stage_order)
+    for df, name in [(rp1_df, 'RP1'), (johannesburg_df, 'Johannesburg'), (abidjan_df, 'Abidjan')]:
+        # Create combined plot
+        fig = create_combined_plot(df, name)
         
-        # Create donut chart
-        donut = go.Figure(data=[go.Pie(
-            labels=latest_data.index,
-            values=latest_data[latest_month],
-            hole=.4,
-            marker_colors=[color_map[stage] for stage in latest_data.index],
-            hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>"
-        )])
-        
-        # Update donut layout
-        donut.update_layout(
-            title=f"{name.capitalize()} Distribution - {latest_month}",
-            showlegend=True,
-            legend_title_text='Stages',
-            height=500,
-            annotations=[dict(
-                text=f'N={int(latest_data[latest_month].sum())}',
-                x=0.5, y=0.5,
-                font_size=20,
-                showarrow=False
-            )]
+        # Save the figure with full HTML
+        fig.write_html(
+            f'interactive_plots/{name.lower()}_progress.html',
+            include_plotlyjs=True,
+            full_html=True,
+            config={
+                'displayModeBar': True,
+                'displaylogo': False,
+                'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+                'toImageButtonOptions': {
+                    'format': 'png',
+                    'filename': f'{name.lower()}_progress',
+                    'height': 1000,
+                    'width': 1200,
+                    'scale': 2
+                }
+            }
         )
-        
-        # Create stacked bar chart
-        bar = go.Figure()
-        months = df.columns[1:]  # Skip 'Stage' column
-        
-        for stage in stage_order:
-            if stage in df['Stage'].values:
-                bar.add_trace(go.Bar(
-                    name=stage,
-                    x=months,
-                    y=df[df['Stage'] == stage].iloc[:, 1:].values[0],
-                    marker_color=color_map[stage],
-                    hovertemplate=f"Stage: {stage}<br>Month: %{{x}}<br>Studies: %{{y}}<extra></extra>"
-                ))
-        
-        # Update bar layout
-        monthly_totals = df[months].sum()
-        bar.update_layout(
-            title=f"{name.capitalize()} Progress Over Time",
-            barmode='stack',
-            showlegend=True,
-            legend_title_text='Stages',
-            xaxis_title='Month',
-            yaxis_title='Number of Studies',
-            height=600,
-            hovermode='closest',
-            annotations=[
-                dict(
-                    x=month,
-                    y=total,
-                    text=f'N={int(total)}',
-                    showarrow=False,
-                    yshift=10
-                ) for month, total in monthly_totals.items()
-            ]
-        )
-        
-        # Save charts
-        donut.write_html(f'interactive_plots/{name}_donut.html', include_plotlyjs='cdn', full_html=False)
-        bar.write_html(f'interactive_plots/{name}_bar.html', include_plotlyjs='cdn', full_html=False)
 
 def main():
     process_data()
