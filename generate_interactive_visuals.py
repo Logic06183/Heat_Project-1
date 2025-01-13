@@ -35,7 +35,7 @@ def create_donut_chart(df, name):
     """Create a donut chart for the latest month's data"""
     # Get latest month data
     latest_month = df.columns[-1]
-    latest_data = df.copy()
+    latest_data = df[~df.index.isin(['Total'])].copy()  # Exclude Total row
     
     # Filter out stages with zero values and sort by stage_order
     latest_data = latest_data[latest_data[latest_month] > 0]
@@ -52,6 +52,9 @@ def create_donut_chart(df, name):
         textinfo='value+percent',
         textposition='inside'
     )])
+    
+    # Get total from the Total row if it exists, otherwise calculate it
+    total = df.loc['Total', latest_month] if 'Total' in df.index else latest_data[latest_month].sum()
     
     # Update layout
     fig.update_layout(
@@ -74,7 +77,7 @@ def create_donut_chart(df, name):
         height=600,
         margin=dict(t=100, b=150),
         annotations=[dict(
-            text=f'Total Studies: {int(latest_data[latest_month].sum())}',
+            text=f'Total Studies: {int(total)}',
             x=0.5, y=0.5,
             font_size=16,
             showarrow=False
@@ -88,21 +91,27 @@ def create_stacked_bar_chart(df, name):
     # Create figure
     fig = go.Figure()
     
+    # Remove Total row if it exists
+    df_no_total = df[~df.index.isin(['Total'])]
+    
     # Add traces for each stage in reverse order (for proper stacking)
     for stage in reversed(stage_order):
-        if stage in df.index:
-            stage_data = df.loc[stage]
+        if stage in df_no_total.index:
+            stage_data = df_no_total.loc[stage]
             if any(stage_data > 0):  # Only add trace if there's non-zero data
                 fig.add_trace(go.Bar(
                     name=stage,
-                    x=df.columns,
+                    x=df_no_total.columns,
                     y=stage_data,
                     marker_color=color_map[stage],
                     hovertemplate=f"Stage: {stage}<br>Month: %{{x}}<br>Studies: %{{y}}<extra></extra>"
                 ))
     
-    # Calculate monthly totals
-    monthly_totals = df.sum()
+    # Get monthly totals from Total row if it exists, otherwise calculate
+    if 'Total' in df.index:
+        monthly_totals = df.loc['Total']
+    else:
+        monthly_totals = df_no_total.sum()
     
     # Update layout
     fig.update_layout(
