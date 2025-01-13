@@ -96,8 +96,8 @@ def create_stacked_bar_chart(df, name):
     # Remove Total row if it exists
     df_no_total = df[~df.index.isin(['Total'])]
     
-    # Add traces for each stage in reverse order (for proper stacking)
-    for stage in reversed(stage_order):
+    # Add traces for each stage in order (for legend order)
+    for stage in stage_order:
         if stage in df_no_total.index:
             stage_data = df_no_total.loc[stage]
             if any(stage_data > 0):  # Only add trace if there's non-zero data
@@ -128,6 +128,7 @@ def create_stacked_bar_chart(df, name):
         ),
         showlegend=True,
         legend=dict(
+            traceorder='reversed',  # Reverse legend order to match visual stack
             orientation="h",
             yanchor="bottom",
             y=-0.5,
