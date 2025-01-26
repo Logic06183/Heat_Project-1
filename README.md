@@ -22,6 +22,14 @@ The visualizations are updated monthly. To update:
 2. Place the new visualizations in the corresponding month's folder
 3. Update the `index.html` file to point to the new visualizations
 
+## Deployment
+The interactive visualizations are available at:
+- Johannesburg Progress: [Bar Chart](interactive_plots/johannesburg_bar.html) | [Donut Chart](interactive_plots/johannesburg_donut.html)
+- RP1 Progress: [Bar Chart](interactive_plots/rp1_bar.html) | [Donut Chart](interactive_plots/rp1_donut.html)
+- Abidjan Progress: [Bar Chart](interactive_plots/abidjan_bar.html) | [Donut Chart](interactive_plots/abidjan_donut.html)
+
+Last updated: 2025-01-26
+
 ## File Structure
 
 ```
@@ -37,4 +45,4 @@ The visualizations are updated monthly. To update:
 
 ## License
 
-© 2025 HE2AT Center. All rights reserved.
+ 2025 HE2AT Center. All rights reserved.
