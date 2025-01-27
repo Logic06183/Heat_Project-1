@@ -63,13 +63,133 @@
             font-weight: bold;
             color: #2c3e50;
         }
-        h2.plot-title {
-            font-size: 2.2em;
+        .plot-container.dashboard {
+            margin-top: 50px;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+            margin: 30px 0 40px;
+            padding: 0 20px;
+        }
+        .stat-box {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        .stat-value {
+            font-size: 3em;
+            font-weight: 700;
             color: #2c3e50;
-            margin: 25px 0 35px 0;
-            padding-bottom: 12px;
-            border-bottom: 3px solid #e9ecef;
-            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 1.2em;
+            color: #505c6c;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .stat-sublabel {
+            font-size: 0.9em;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .highlight-section {
+            background: white;
+            margin: 40px 20px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .highlight-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .highlight-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #bcbd22, #17becf);
+            border-radius: 2px;
+        }
+        .highlight-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+        }
+        .highlight-box {
+            flex: 1;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .highlight-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        .highlight-box.datasets-hand {
+            border-top: 4px solid #bcbd22;
+        }
+        .highlight-box.harmonization {
+            border-top: 4px solid #17becf;
+        }
+        .highlight-box.analysis-ready {
+            border-top: 4px solid #e377c2;
+        }
+        .highlight-label {
+            font-size: 1.2em;
+            color: #505c6c;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .highlight-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 10px 0;
+            line-height: 1.2;
+        }
+        .highlight-total {
+            font-size: 1em;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        .plot-title {
+            background: linear-gradient(90deg, #2c3e50, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            font-size: 2.4em;
+            font-weight: 700;
         }
         .plot-container {
             margin-bottom: 50px;
@@ -78,9 +198,6 @@
             border-radius: 12px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             transition: transform 0.2s ease;
-        }
-        .plot-container.dashboard {
-            margin-top: 50px;
         }
         .plot-container:hover {
             transform: translateY(-2px);
@@ -124,68 +241,6 @@
         .progress-chart:hover {
             border-color: #dee2e6;
             box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-        }
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-        .stat-box {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        .stat-label {
-            font-size: 1.2em;
-            color: #505c6c;
-            margin-bottom: 5px;
-        }
-        .stat-sublabel {
-            font-size: 1em;
-            color: #6c757d;
-        }
-        .highlight-section {
-            margin-bottom: 40px;
-        }
-        .highlight-title {
-            font-size: 1.8em;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        .highlight-stats {
-            display: flex;
-            justify-content: space-between;
-        }
-        .highlight-box {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            text-align: center;
-            flex: 1;
-        }
-        .highlight-label {
-            font-size: 1.2em;
-            color: #505c6c;
-            margin-bottom: 10px;
-        }
-        .highlight-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        .highlight-total {
-            font-size: 1em;
-            color: #6c757d;
         }
         .footer {
             text-align: center;
