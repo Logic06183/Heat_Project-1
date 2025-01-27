@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 20px 0;
+            font-family: Arial, sans-serif;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .stat-sublabel {
+            font-size: 12px;
+            color: #666;
+        }
+        .highlight-section {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .highlight-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .highlight-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .highlight-box {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+        }
+        .datasets-hand {
+            border-color: #bcbd22;
+        }
+        .harmonization {
+            border-color: #17becf;
+        }
+        .analysis-ready {
+            border-color: #e377c2;
+        }
+        .highlight-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .highlight-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .highlight-total {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <h1 class="title">Combined Progress Dashboard - December 2024</h1>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value">286</div>
+                <div class="stat-label">Total Studies</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">192</div>
+                <div class="stat-label">Active Studies</div>
+                <div class="stat-sublabel">(In various stages of engagement)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">94</div>
+                <div class="stat-label">Ineligible/Declined</div>
+            </div>
+        </div>
+        
+        <div class="highlight-section">
+            <div class="highlight-title">Data Processing Progress</div>
+            <div class="highlight-stats">
+                <div class="highlight-box datasets-hand">
+                    <div class="highlight-label">Datasets in Hand</div>
+                    <div class="highlight-value">28</div>
+                    <div class="highlight-total">9.79% of total studies</div>
+                </div>
+                <div class="highlight-box harmonization">
+                    <div class="highlight-label">Database Harmonization</div>
+                    <div class="highlight-value">14</div>
+                    <div class="highlight-total">4.9% of total studies</div>
+                </div>
+                <div class="highlight-box analysis-ready">
+                    <div class="highlight-label">Ready for Analysis</div>
+                    <div class="highlight-value">9</div>
+                    <div class="highlight-total">3.15% of total studies</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="donut-chart" style="width: 100%; height: 600px;"></div>
+    </div>
+    <script>
+        const data = [{
+            values: [3, 25, 51, 47, 15, 28, 14, 9, 94],
+            labels: [
+                "1st or 2nd invites",
+                "3rd or more invites",
+                "Data sharing discussions and eligibility check",
+                "DTA in progress",
+                "DTA completed",
+                "Data sets in hand",
+                "Database harmonization",
+                "Database ready for analysis",
+                "Ineligible/declined participation/data currently unavailable"
+            ],
+            marker: {
+                colors: [
+                    "#ff7f0e",
+                    "#2ca02c",
+                    "#d62728",
+                    "#9467bd",
+                    "#8c564b",
+                    "#bcbd22",  // Datasets in hand
+                    "#17becf",  // Harmonization
+                    "#e377c2",  // Analysis ready
+                    "#7f7f7f"
+                ]
+            },
+            type: 'pie',
+            hole: 0.5,
+            direction: 'clockwise',
+            sort: false,
+            textinfo: 'value+percent',
+            textposition: 'inside',
+            hovertemplate: 'Stage: %{label}<br>Studies: %{value}<extra></extra>'
+        }];
+
+        const layout = {
+            showlegend: true,
+            legend: {
+                orientation: 'h',
+                yanchor: 'bottom',
+                y: -0.5,
+                xanchor: 'center',
+                x: 0.5,
+                traceorder: 'normal'
+            },
+            margin: {
+                t: 0,
+                b: 100
+            },
+            annotations: [{
+                text: 'Total Studies<br>286',
+                showarrow: false,
+                font: { 
+                    size: 20,
+                    weight: 'bold'
+                },
+                x: 0.5,
+                y: 0.5
+            }]
+        };
+
+        const config = {
+            displayModeBar: false,
+            responsive: true
+        };
+
+        Plotly.newPlot('donut-chart', data, layout, config);
+    </script>
+</body>
+</html>

@@ -79,6 +79,9 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             transition: transform 0.2s ease;
         }
+        .plot-container.dashboard {
+            margin-top: 50px;
+        }
         .plot-container:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -122,6 +125,68 @@
             border-color: #dee2e6;
             box-shadow: 0 3px 8px rgba(0,0,0,0.05);
         }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .stat-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 1.2em;
+            color: #505c6c;
+            margin-bottom: 5px;
+        }
+        .stat-sublabel {
+            font-size: 1em;
+            color: #6c757d;
+        }
+        .highlight-section {
+            margin-bottom: 40px;
+        }
+        .highlight-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .highlight-stats {
+            display: flex;
+            justify-content: space-between;
+        }
+        .highlight-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            flex: 1;
+        }
+        .highlight-label {
+            font-size: 1.2em;
+            color: #505c6c;
+            margin-bottom: 10px;
+        }
+        .highlight-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .highlight-total {
+            font-size: 1em;
+            color: #6c757d;
+        }
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -146,7 +211,50 @@
                 <p>HE²AT Project Data Team at Wits Planetary Health | <a href="https://www.he2at.com/" target="_blank">www.he2at.com</a></p>
             </div>
         </div>
-        
+
+        <!-- Combined Progress Dashboard -->
+        <div class="plot-container dashboard">
+            <h2 class="plot-title">Overall Progress Dashboard</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value">286</div>
+                    <div class="stat-label">Total Studies</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">192</div>
+                    <div class="stat-label">Active Studies</div>
+                    <div class="stat-sublabel">(In various stages of engagement)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">94</div>
+                    <div class="stat-label">Ineligible/Declined</div>
+                </div>
+            </div>
+            
+            <div class="highlight-section">
+                <div class="highlight-title">Data Processing Progress</div>
+                <div class="highlight-stats">
+                    <div class="highlight-box datasets-hand">
+                        <div class="highlight-label">Datasets in Hand</div>
+                        <div class="highlight-value">28</div>
+                        <div class="highlight-total">9.79% of total studies</div>
+                    </div>
+                    <div class="highlight-box harmonization">
+                        <div class="highlight-label">Database Harmonization</div>
+                        <div class="highlight-value">14</div>
+                        <div class="highlight-total">4.9% of total studies</div>
+                    </div>
+                    <div class="highlight-box analysis-ready">
+                        <div class="highlight-label">Ready for Analysis</div>
+                        <div class="highlight-value">9</div>
+                        <div class="highlight-total">3.15% of total studies</div>
+                    </div>
+                </div>
+            </div>
+
+            <iframe src="interactive_plots/combined_donut.html" width="100%" height="600px" frameborder="0" scrolling="no"></iframe>
+        </div>
+
         <!-- RP1 Section -->
         <div class="plot-container">
             <h2 class="plot-title">RP1 Progress</h2>
