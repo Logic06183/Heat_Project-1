@@ -10,47 +10,47 @@
             const data = [
                 {
                     name: "Ineligible/declined participation/data currently unavailable",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [18, 16, 14, 11, 11],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [16, 14, 11, 11, 11],
                     type: "bar",
                     marker: {color: "#7f7f7f"},
                     hovertemplate: "Stage: Ineligible/declined participation/data currently unavailable<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "1st or 2nd invites",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [5, 4, 3, 2, 1],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [4, 3, 2, 1, 1],
                     type: "bar",
                     marker: {color: "#ff7f0e"},
                     hovertemplate: "Stage: 1st or 2nd invites<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "3rd or more invites",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [3, 2, 1, 1, 1],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [2, 1, 1, 1, 1],
                     type: "bar",
                     marker: {color: "#2ca02c"},
                     hovertemplate: "Stage: 3rd or more invites<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "Data sharing discussions and eligibility check",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [2, 2, 2, 3, 3],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [2, 2, 3, 3, 3],
                     type: "bar",
                     marker: {color: "#d62728"},
                     hovertemplate: "Stage: Data sharing discussions and eligibility check<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "DTA in progress",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [4, 4, 4, 5, 5],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [4, 4, 5, 5, 5],
                     type: "bar",
                     marker: {color: "#9467bd"},
                     hovertemplate: "Stage: DTA in progress<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "DTA completed",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
                     y: [4, 4, 4, 4, 4],
                     type: "bar",
                     marker: {color: "#8c564b"},
@@ -58,24 +58,24 @@
                 },
                 {
                     name: "Data sets in hand",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [4, 5, 6, 4, 4],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [4, 4, 4, 4, 3],
                     type: "bar",
                     marker: {color: "#bcbd22"},
                     hovertemplate: "Stage: Data sets in hand<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "Database harmonization",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [6, 9, 12, 14, 14],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [10, 12, 13, 14, 15],
                     type: "bar",
                     marker: {color: "#17becf"},
                     hovertemplate: "Stage: Database harmonization<br>Month: %{x}<br>Studies: %{y}"
                 },
                 {
                     name: "Database ready for analysis",
-                    x: ["Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"],
-                    y: [0, 0, 0, 3, 3],
+                    x: ["Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025"],
+                    y: [3, 3, 3, 3, 3],
                     type: "bar",
                     marker: {color: "#e377c2"},
                     hovertemplate: "Stage: Database ready for analysis<br>Month: %{x}<br>Studies: %{y}"
@@ -85,33 +85,70 @@
             const layout = {
                 title: {
                     text: "Johannesburg Progress Over Time",
-                    font: {size: 20},
+                    font: { size: 20 },
                     x: 0.5,
                     y: 0.95,
                     xanchor: "center",
                     yanchor: "top"
                 },
+                xaxis: {
+                    title: { text: "Month" }
+                },
+                yaxis: {
+                    title: { text: "Number of Studies" }
+                },
+                barmode: "stack",
                 showlegend: true,
                 legend: {
+                    traceorder: "normal",
                     orientation: "h",
                     yanchor: "bottom",
                     y: -0.5,
                     xanchor: "center",
-                    x: 0.5,
-                    traceorder: "normal"
+                    x: 0.5
                 },
                 margin: {
                     t: 100,
                     b: 150
                 },
-                barmode: "stack",
                 height: 600,
-                xaxis: {
-                    title: {text: "Month"}
-                },
-                yaxis: {
-                    title: {text: "Number of Studies"}
-                }
+                annotations: [
+                    {
+                        x: "Sep 2024",
+                        y: 49,
+                        text: "N=49",
+                        showarrow: false,
+                        yshift: 10
+                    },
+                    {
+                        x: "Oct 2024",
+                        y: 47,
+                        text: "N=47",
+                        showarrow: false,
+                        yshift: 10
+                    },
+                    {
+                        x: "Nov 2024",
+                        y: 46,
+                        text: "N=46",
+                        showarrow: false,
+                        yshift: 10
+                    },
+                    {
+                        x: "Dec 2024",
+                        y: 46,
+                        text: "N=46",
+                        showarrow: false,
+                        yshift: 10
+                    },
+                    {
+                        x: "Jan 2025",
+                        y: 46,
+                        text: "N=46",
+                        showarrow: false,
+                        yshift: 10
+                    }
+                ]
             };
 
             const config = {
