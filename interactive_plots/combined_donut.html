@@ -18,7 +18,7 @@
     <div id="donut-chart"></div>
     <script>
         const data = [{
-            values: [3, 25, 51, 47, 15, 28, 14, 9, 94],
+            values: [2, 16, 35, 32, 9, 11, 21, 21, 96],
             labels: [
                 "1st or 2nd invites",
                 "3rd or more invites",
@@ -53,6 +53,9 @@
         }];
 
         const layout = {
+            title: {
+                text: 'Combined Distribution - Jan',
+            },
             showlegend: true,
             legend: {
                 orientation: 'h',
@@ -63,7 +66,7 @@
                 traceorder: 'normal'
             },
             margin: {
-                t: 0,
+                t: 100,
                 b: 100,
                 l: 0,
                 r: 0
