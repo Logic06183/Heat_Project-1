@@ -7,16 +7,16 @@ os.makedirs('interactive_plots', exist_ok=True)
 
 # Define the order of stages for consistent visualization
 stage_order = [
-    'Database ready for analysis',  # Final success at top
-    'Database harmonization',
-    'Data sets in hand',
-    'DTA completed',
-    'DTA in progress',
-    'Data sharing discussions and eligibility check',
-    '3rd or more invites',
-    '1st or 2nd invites',
+    'Ineligible/declined participation/data currently unavailable',  # Start with ineligible
     'Contact procedures not initiated',
-    'Ineligible/declined participation/data currently unavailable'  # Always at bottom
+    '1st or 2nd invites',
+    '3rd or more invites',
+    'Data sharing discussions and eligibility check',
+    'DTA in progress',
+    'DTA completed',
+    'Data sets in hand',
+    'Database harmonization',  # End with the final process
+    'Database ready for analysis'
 ]
 
 # Define colors for each stage
@@ -39,24 +39,26 @@ def create_donut_chart(df, name):
     latest_month = df.columns[-1]
     latest_data = df[~df.index.isin(['Total'])].copy()  # Exclude Total row
     
-    # Filter out stages with zero values and sort by stage_order
+    # Filter out stages with zero values
     latest_data = latest_data[latest_data[latest_month] > 0]
-    latest_data = latest_data.reindex(stage_order)
-    latest_data = latest_data.dropna()
+    
+    # Sort stages according to stage_order
+    sorted_stages = [stage for stage in stage_order if stage in latest_data.index]
+    sorted_values = [latest_data.loc[stage, latest_month] for stage in sorted_stages]
     
     # Create donut chart
     fig = go.Figure(data=[go.Pie(
-        labels=latest_data.index,
-        values=latest_data[latest_month],
+        labels=sorted_stages,
+        values=sorted_values,
         hole=.5,
-        marker_colors=[color_map[stage] for stage in latest_data.index],
+        marker_colors=[color_map[stage] for stage in sorted_stages],
         hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>",
         textinfo='value+percent',
         textposition='inside'
     )])
     
     # Get total from the Total row if it exists, otherwise calculate it
-    total = df.loc['Total', latest_month] if 'Total' in df.index else latest_data[latest_month].sum()
+    total = df.loc['Total', latest_month] if 'Total' in df.index else sum(sorted_values)
     
     # Update layout
     fig.update_layout(
@@ -167,6 +169,80 @@ def create_stacked_bar_chart(df, name):
     
     return fig
 
+def create_combined_donut_chart(datasets):
+    """Create a combined donut chart showing the latest distribution across all datasets"""
+    # Combine the latest month data from all datasets
+    combined_data = {}
+    total_studies = 0
+    
+    for site_name, file_name in datasets.items():
+        if os.path.exists(file_name):
+            df = pd.read_csv(file_name, index_col='Stage')
+            latest_month = df.columns[-1]
+            
+            # Get data excluding Total row
+            latest_data = df[~df.index.isin(['Total'])].copy()
+            
+            # Add data to combined dictionary
+            for stage in latest_data.index:
+                if stage not in combined_data:
+                    combined_data[stage] = 0
+                combined_data[stage] += latest_data.loc[stage, latest_month]
+            
+            # Add to total studies
+            if 'Total' in df.index:
+                total_studies += df.loc['Total', latest_month]
+            else:
+                total_studies += latest_data[latest_month].sum()
+    
+    # Filter out stages with zero values and prepare for plotting
+    plot_data = {stage: count for stage, count in combined_data.items() if count > 0}
+    
+    # Sort stages according to stage_order
+    sorted_stages = [stage for stage in stage_order if stage in plot_data]
+    sorted_values = [plot_data[stage] for stage in sorted_stages]
+    
+    # Create donut chart
+    fig = go.Figure(data=[go.Pie(
+        labels=sorted_stages,
+        values=sorted_values,
+        hole=.5,
+        marker_colors=[color_map[stage] for stage in sorted_stages],
+        hovertemplate="Stage: %{label}<br>Studies: %{value}<extra></extra>",
+        textinfo='value+percent',
+        textposition='inside'
+    )])
+    
+    # Update layout
+    fig.update_layout(
+        showlegend=True,
+        title=dict(
+            text=f"Combined Distribution - Latest Data",
+            x=0.5,
+            y=0.95,
+            xanchor='center',
+            yanchor='top',
+            font=dict(size=20)
+        ),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.5,
+            xanchor="center",
+            x=0.5
+        ),
+        height=600,
+        margin=dict(t=100, b=150),
+        annotations=[dict(
+            text=f'Total Studies: {int(total_studies)}',
+            x=0.5, y=0.5,
+            font_size=16,
+            showarrow=False
+        )]
+    )
+    
+    return fig
+
 def main():
     # Process each dataset
     datasets = {
@@ -207,6 +283,18 @@ def main():
                     'responsive': True
                 }
             )
+    
+    # Create and save combined donut chart
+    combined_donut = create_combined_donut_chart(datasets)
+    combined_donut.write_html(
+        'interactive_plots/combined_donut.html',
+        include_plotlyjs='cdn',
+        full_html=True,
+        config={
+            'displayModeBar': False,
+            'responsive': True
+        }
+    )
 
 if __name__ == "__main__":
     main()

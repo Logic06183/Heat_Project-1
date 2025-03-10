@@ -184,6 +184,7 @@
         .plot-title {
             background: linear-gradient(90deg, #2c3e50, #3498db);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
             padding: 20px 0;
@@ -263,7 +264,7 @@
             <p>Interactive visualization of data acquisition progress across the RP1 and RP2 project</p>
             <div class="developer-info">
                 <p>Developed by <span class="developer-name">Craig Parker</span></p>
-                <p>HE²AT Project Data Team at Wits Planetary Health | <a href="https://www.he2at.com/" target="_blank">www.he2at.com</a></p>
+                <p>HE²AT Project Data Team at Wits Planetary Health | <a href="https://www.he2at.com/" target="_blank" rel="noopener">www.he2at.com</a></p>
             </div>
         </div>
 
@@ -291,50 +292,50 @@
                 <div class="highlight-stats">
                     <div class="highlight-box datasets-hand">
                         <div class="highlight-label">Datasets in Hand</div>
-                        <div class="highlight-value">14</div>
-                        <div class="highlight-total">4.90% of total studies</div>
+                        <div class="highlight-value">16</div>
+                        <div class="highlight-total">5.59% of total studies</div>
                     </div>
                     <div class="highlight-box harmonization">
                         <div class="highlight-label">Database Harmonization</div>
-                        <div class="highlight-value">15</div>
-                        <div class="highlight-total">5.24% of total studies</div>
+                        <div class="highlight-value">32</div>
+                        <div class="highlight-total">11.19% of total studies</div>
                     </div>
                     <div class="highlight-box analysis-ready">
                         <div class="highlight-label">Ready for Analysis</div>
-                        <div class="highlight-value">24</div>
-                        <div class="highlight-total">8.39% of total studies</div>
+                        <div class="highlight-value">0</div>
+                        <div class="highlight-total">0.00% of total studies</div>
                     </div>
                 </div>
             </div>
 
-            <iframe src="interactive_plots/combined_donut.html" width="100%" height="600px" frameborder="0" scrolling="no"></iframe>
+            <iframe src="interactive_plots/combined_donut.html" width="100%" height="600px" frameborder="0" scrolling="no" title="Combined Progress Donut Chart"></iframe>
         </div>
 
         <!-- RP1 Section -->
         <div class="plot-container">
             <h2 class="plot-title">RP1 Progress</h2>
             <div class="chart-row">
-                <iframe class="donut-chart" src="interactive_plots/rp1_donut.html" frameborder="0"></iframe>
+                <iframe class="donut-chart" src="interactive_plots/rp1_donut.html" frameborder="0" title="RP1 Progress Donut Chart"></iframe>
             </div>
-            <iframe class="progress-chart" src="interactive_plots/rp1_bar.html" frameborder="0"></iframe>
+            <iframe class="progress-chart" src="interactive_plots/rp1_bar.html" frameborder="0" title="RP1 Progress Bar Chart"></iframe>
         </div>
 
         <!-- Johannesburg Section -->
         <div class="plot-container">
             <h2 class="plot-title">Johannesburg Progress</h2>
             <div class="chart-row">
-                <iframe class="donut-chart" src="interactive_plots/johannesburg_donut.html" frameborder="0"></iframe>
+                <iframe class="donut-chart" src="interactive_plots/johannesburg_donut.html" frameborder="0" title="Johannesburg Progress Donut Chart"></iframe>
             </div>
-            <iframe class="progress-chart" src="interactive_plots/johannesburg_bar.html" frameborder="0"></iframe>
+            <iframe class="progress-chart" src="interactive_plots/johannesburg_bar.html" frameborder="0" title="Johannesburg Progress Bar Chart"></iframe>
         </div>
 
         <!-- Abidjan Section -->
         <div class="plot-container">
             <h2 class="plot-title">Abidjan Progress</h2>
             <div class="chart-row">
-                <iframe class="donut-chart" src="interactive_plots/abidjan_donut.html" frameborder="0"></iframe>
+                <iframe class="donut-chart" src="interactive_plots/abidjan_donut.html" frameborder="0" title="Abidjan Progress Donut Chart"></iframe>
             </div>
-            <iframe class="progress-chart" src="interactive_plots/abidjan_bar.html" frameborder="0"></iframe>
+            <iframe class="progress-chart" src="interactive_plots/abidjan_bar.html" frameborder="0" title="Abidjan Progress Bar Chart"></iframe>
         </div>
 
         <div class="footer">

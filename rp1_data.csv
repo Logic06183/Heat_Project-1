@@ -1,12 +1,12 @@
-Stage,Aug,Sep,Oct,Nov,Dec
-Contact procedures not initiated,0,0,0,0,0
-1st or 2nd invites,11,3,2,2,2
-3rd or more invites,53,26,25,24,24
-Data sharing discussions and eligibility check,44,43,47,44,44
-DTA in progress,34,39,35,33,31
-DTA completed,4,1,5,7,8
-Data sets in hand,25,22,23,23,24
-Database harmonization,2,5,5,6,0
-Database ready for analysis,0,0,0,0,6
-Ineligible/declined participation/data currently unavailable,49,83,80,83,83
-Total,222,222,222,222,222
+Stage,Jul 2024,Aug 2024,Sep 2024,Oct 2024,Nov 2024,Dec 2024,Jan 2025,Feb 2025
+Contact procedures not initiated,0,0,0,0,0,0,0,0
+1st or 2nd invites,25,11,3,2,2,2,0,0
+3rd or more invites,44,53,26,25,24,24,16,16
+Data sharing discussions and eligibility check,48,44,43,47,44,44,35,32
+DTA in progress,33,34,39,35,33,31,32,29
+DTA completed,0,0,0,0,0,0,0,15
+Data sets in hand,25,25,22,23,23,24,24,14
+Database harmonization,0,0,0,0,0,0,0,14
+Database ready for analysis,0,0,0,0,0,0,0,0
+Ineligible/declined participation/data currently unavailable,41,49,83,80,83,83,96,98
+Total,216,216,216,212,209,208,203,218
